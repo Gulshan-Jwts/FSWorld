@@ -31,18 +31,28 @@ import {
   RiDeleteBinLine,
   RiLoader2Line,
 } from "@remixicon/react";
+import { useData } from "@/components/DataContext";
 
 const Page = () => {
+  const { categories } = useData();
+  const subcategories = {};
+
+  categories.forEach((cat) => {
+    const name = cat;
+    subcategories[name.name] = cat.subcategories.map((sub) => sub);
+  });
+
   const [formData, setFormData] = useState({
     title: "",
     oldPrice: "",
     currentPrice: "",
     description: "",
     sizes: ["S", "M", "L"],
-    category: "Womens Wear",
-    subcategory: "Saree",
+    category: categories[0]?.name || "Womens Wear",
+    subcategory: categories[0]?.subcategories[0] || "Saree",
     tag: "New Arrival",
     shiningEffect: false,
+    searchable: [],
     inStock: true,
   });
   const [images, setImages] = useState({
@@ -51,12 +61,15 @@ const Page = () => {
   const [newColor, setNewColor] = useState("");
   const [editorData, setEditorData] = useState("");
   const [uploading, setUploading] = useState({});
+  const [searchable, setsearchable] = useState("");
 
-  const subcategories = {
-    "Womens Wear": ["Saree", "Kurti", "Suit", "Lehenga", "Tops", "Jeans"],
-    "Mens Wear": ["Shirts", "T-Shirts", "Formal", "Jeans", "Kurtas", "Jackets"],
-    Kids: ["T-Shirts", "Dresses", "Jeans", "Kurtas", "Jackets", "Skirts"],
-  };
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      category: categories[0]?.name || "Womens Wear",
+      subcategory: categories[0]?.subcategories[0] || "Saree",
+    }));
+  }, [categories]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -98,6 +111,19 @@ const Page = () => {
       ...prev,
       category,
       subcategory: subcategories[category][0],
+    }));
+  };
+
+  const handlesearchableChange = (e) => {
+    e.preventDefault();
+    const value = e.target.value;
+    setsearchable(value);
+    setFormData((prev) => ({
+      ...prev,
+      searchable: value
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean),
     }));
   };
 
@@ -246,7 +272,7 @@ const Page = () => {
               type="number"
               name="oldPrice"
               className="price-input"
-              placeholder="Enter old price (e.g., ₹5999)"
+              placeholder="Enter old price (e.g., &#8377;5999)"
               value={formData.oldPrice}
               onChange={handleInputChange}
               required
@@ -255,7 +281,7 @@ const Page = () => {
               type="number"
               name="currentPrice"
               className="price-input"
-              placeholder="Enter current price (e.g., ₹4999)"
+              placeholder="Enter current price (e.g., &#8377;4999)"
               value={formData.currentPrice}
               onChange={handleInputChange}
               required
@@ -617,9 +643,9 @@ const Page = () => {
               onChange={handleCategoryChange}
               className="category-select"
             >
-              {["Womens Wear", "Mens Wear", "Kids"].map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
+              {categories.map((cat) => (
+                <option key={cat._id} value={cat.name}>
+                  {cat.name}
                 </option>
               ))}
             </select>
@@ -632,11 +658,13 @@ const Page = () => {
               onChange={handleInputChange}
               className="category-select"
             >
-              {subcategories[formData.category].map((subcat) => (
-                <option key={subcat} value={subcat}>
-                  {subcat}
-                </option>
-              ))}
+              {Object.keys(subcategories).length !== 0 &&
+                subcategories[formData.category] &&
+                subcategories[formData.category].map((subcat) => (
+                  <option key={subcat} value={subcat}>
+                    {subcat}
+                  </option>
+                ))}
             </select>
           </div>
         </div>
@@ -655,6 +683,18 @@ const Page = () => {
               </button>
             ))}
           </div>
+        </div>
+        <div className="form-section">
+          <h2>searchable keywords</h2>
+          <input
+            type="text"
+            name="title"
+            className="title-input"
+            placeholder="separate by commas e.g. saree, silk saree, designer saree"
+            value={searchable}
+            onChange={handlesearchableChange}
+            required
+          />
         </div>
         <div className="form-section">
           <h2>Shining Effect</h2>

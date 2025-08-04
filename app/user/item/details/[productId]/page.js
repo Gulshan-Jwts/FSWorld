@@ -128,10 +128,10 @@ const Page = () => {
           </h1>
           <div className="product-price">
             <span className="price-current">
-              ₹{product.currentPrice || "5,999"}
+              &#8377;{product.currentPrice || "5,999"}
             </span>
             <span className="price-original">
-              ₹{product.oldPrice || "7,999"}
+              &#8377;{product.oldPrice || "7,999"}
             </span>
           </div>
 
@@ -174,9 +174,6 @@ const Page = () => {
                 </button>
               ))}
             </div>
-            <button className="size-chart-btn" data-chart="toggle">
-              Size Chart
-            </button>
           </div>
 
           {/* Quantity Selector */}
@@ -255,40 +252,6 @@ const Page = () => {
             />
           </div>
 
-          {/* Size Chart */}
-          <div className="size-chart">
-            <h3>Size Chart</h3>
-            <table className="size-chart-table">
-              <thead>
-                <tr>
-                  <th>Size</th>
-                  <th>Length (m)</th>
-                  <th>Width (m)</th>
-                  <th>Blouse Piece</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>S</td>
-                  <td>5.5</td>
-                  <td>1.2</td>
-                  <td>Not Included</td>
-                </tr>
-                <tr>
-                  <td>M</td>
-                  <td>5.5</td>
-                  <td>1.2</td>
-                  <td>Not Included</td>
-                </tr>
-                <tr>
-                  <td>L</td>
-                  <td>5.5</td>
-                  <td>1.2</td>
-                  <td>Not Included</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
         </div>
       </div>
 
@@ -314,7 +277,7 @@ const Page = () => {
                 <div className="recommendation-card-content">
                   <h3>{rec.title || "Recommended Product"}</h3>
                   <div className="recommendation-card-price">
-                    ₹{rec.currentPrice || "4,999"}
+                    &#8377;{rec.currentPrice || "4,999"}
                   </div>
                 </div>
               </Link>

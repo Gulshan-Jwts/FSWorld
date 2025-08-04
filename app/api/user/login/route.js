@@ -8,8 +8,7 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 export async function POST(req) {
   try {
-    const body = await req.json();
-    const { googleAcessToken } = body;
+    const { googleAcessToken } = await req.json();
 
     if (!googleAcessToken) {
       return NextResponse.json(
@@ -18,20 +17,20 @@ export async function POST(req) {
       );
     }
 
-    // Verify ID token from Google
-    const ticket = await client.verifygoogleAcessToken({
-      googleAcessToken,
-      audience: process.env.GOOGLE_CLIENT_ID,
-    });
+    const userInfoRes = await fetch(
+      "https://www.googleapis.com/oauth2/v3/userinfo",
+      {
+        headers: {
+          Authorization: `Bearer ${googleAcessToken}`,
+        },
+      }
+    );
 
-    const payload = ticket.getPayload();
-
-    if (!payload || !payload.email) {
-      return NextResponse.json(
-        { success: false, message: "Invalid token payload" },
-        { status: 400 }
-      );
+    if (!userInfoRes.ok) {
+      throw new Error("Failed to fetch user info from Google");
     }
+
+    const payload = await userInfoRes.json();
 
     const { email, name, picture, sub: googleId } = payload;
 
@@ -72,7 +71,7 @@ export async function POST(req) {
       token: jwtToken,
       expiry: Date.now() + 1000 * 60 * 60 * 24 * 30, // 30 days
       user,
-    })
+    });
 
     return NextResponse.json({
       success: true,

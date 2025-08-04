@@ -182,10 +182,10 @@ const HomePage = () => {
                       <h3 className="product-title">{product.title}</h3>
                       <div className="product-price">
                         <span className="price-current">
-                          ₹{product.currentPrice}
+                          &#8377;{product.currentPrice}
                         </span>
                         <span className="price-original">
-                          ₹{product.oldPrice}
+                          &#8377;{product.oldPrice}
                         </span>
                       </div>
                       <button className="add-to-cart">
@@ -262,10 +262,10 @@ const HomePage = () => {
                       <h3 className="product-title">{product.title}</h3>
                       <div className="product-price">
                         <span className="price-current">
-                          ₹{product.currentPrice}
+                          &#8377;{product.currentPrice}
                         </span>
                         <span className="price-original">
-                          ₹{product.oldPrice}
+                          &#8377;{product.oldPrice}
                         </span>
                       </div>
                       <button className="add-to-cart">

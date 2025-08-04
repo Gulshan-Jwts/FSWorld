@@ -6,6 +6,7 @@ import connectMongo from "@/lib/connectMongo";
 export async function DELETE(req) {
   await connectMongo();
   const { categoryName, subcategoryName } = await req.json();
+  console.log(categoryName, "category to delete")
 
   const productInUse = await Product.findOne({
     category: categoryName,

@@ -1,12 +1,24 @@
 import { NextResponse } from "next/server";
+import { jwtVerify } from "jose";
 
+async function verifyJWT(token) {
+  try {
+     const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+    const { payload } = await jwtVerify(token, secret);
+    return payload;
+  } catch (err) {
+    console.error("JWT verification failed:", err);
+    return null;
+  }
+}
 
 export async function POST(req) {
   try {
     const authHeader = req.headers.get("Authorization");
 
     const token = authHeader.split(" ")[1];
-    const payload = await verifyJWT(token, process.env.JWT_SECRET);
+    console.log("Token:", token);
+    const payload = await verifyJWT(token);
 
     if (!payload) {
       return NextResponse.json(

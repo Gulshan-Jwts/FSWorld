@@ -14,6 +14,7 @@ const productSchema = new mongoose.Schema(
 
     sizes: { type: [String], required: true },
     images: { type: Object, required: true },
+    searchable: { type: [String], default: [] },
 
     inStock: { type: Boolean, default: true },
     shiningEffect: { type: Boolean, default: false },

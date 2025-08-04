@@ -165,7 +165,7 @@ const Navbar = () => {
                 )}
               </Link>
               {isAdmin && (
-                <Link href="/admin" className="icon-btn">
+                <Link href="/admin/dashboard" className="icon-btn">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     height="22px"

@@ -18,7 +18,8 @@ export async function middleware(request) {
   const { pathname } = request.nextUrl;
 
   // Admin
-  if (pathname.startsWith("/admin") || pathname.startsWith("/api/admin")) {
+  if ((pathname.startsWith("/admin") || pathname.startsWith("/api/admin")) && !pathname.startsWith("/api/admin/login") && !pathname.startsWith("/admin/login")) {
+    console.log("Admin middleware triggered for path:", pathname);
     const token = request.cookies.get("adminToken")?.value;
 
     if (!token) {
