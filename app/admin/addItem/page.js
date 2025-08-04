@@ -32,6 +32,7 @@ import {
   RiLoader2Line,
 } from "@remixicon/react";
 import { useData } from "@/components/DataContext";
+import Image from "next/image";
 
 const Page = () => {
   const { categories } = useData();
@@ -457,7 +458,7 @@ const Page = () => {
           <div className="image-gallery">
             {images.main.map((image, i) => (
               <div className="image-box" key={i}>
-                <img src={image} alt={`Main Image ${i + 1}`} />
+                <Image height={100} width={100} src={image} alt={`Main Image ${i + 1}`} />
                 <span
                   className="remove-btn"
                   onClick={() => removeImage("main", i)}
@@ -538,7 +539,8 @@ const Page = () => {
                     <div className="image-gallery">
                       {images[color].map((image, index) => (
                         <div className="image-box" key={index}>
-                          <img
+                          <Image
+                          height={100} width={100}
                             src={image}
                             alt={`${color} Image ${index + 1}`}
                           />

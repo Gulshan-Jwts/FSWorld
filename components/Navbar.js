@@ -115,7 +115,7 @@ const Navbar = () => {
             </Link>
           ) : (
             <>
-              <Link href="/search" className="icon-btn">
+              <Link href="/user/search" className="icon-btn">
                 <svg
                   fill="none"
                   stroke="currentColor"
