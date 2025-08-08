@@ -1,5 +1,3 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "../../auth/[...nextauth]/route";
 import { NextResponse } from "next/server";
 import connectMongo from "@/lib/connectMongo";
 import User from "@/models/User";
@@ -7,7 +5,6 @@ import User from "@/models/User";
 export async function POST(req) {
   try {
     const { email } = await req.json();
-    const session = await getServerSession(authOptions);
 
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

@@ -47,13 +47,8 @@ export async function POST(req) {
       user = await User.create({
         email,
         username: name || username,
-        googleId,
-        affilator: {
-          id: userId,
-          isLoggedIn: true,
-          isActive: false,
-          image: picture,
-        },
+        id: userId,
+        image: picture,
       });
     }
 

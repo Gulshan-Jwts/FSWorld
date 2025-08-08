@@ -49,6 +49,9 @@ const Page = () => {
     currentPrice: "",
     description: "",
     sizes: ["S", "M", "L"],
+    vendorName: "",
+    vendorprice: "",
+    skuId: "",
     category: categories[0]?.name || "Womens Wear",
     subcategory: categories[0]?.subcategories[0] || "Saree",
     tag: "New Arrival",
@@ -63,6 +66,8 @@ const Page = () => {
   const [editorData, setEditorData] = useState("");
   const [uploading, setUploading] = useState({});
   const [searchable, setsearchable] = useState("");
+  const [allSizes, setAllSizes] = useState(["S", "M", "L", "XL", "2XL", "3XL"]);
+  const [customSize, setCustomSize] = useState("");
 
   useEffect(() => {
     setFormData((prev) => ({
@@ -287,7 +292,40 @@ const Page = () => {
               onChange={handleInputChange}
               required
             />
+            <input
+              type="number"
+              name="vendorprice"
+              className="price-input"
+              placeholder="Enter current price (e.g., &#8377;4999)"
+              value={formData.vendorprice}
+              onChange={handleInputChange}
+              required
+            />
           </div>
+        </div>
+        <div className="form-section">
+          <h2>Vendor Name</h2>
+          <input
+            type="text"
+            name="title"
+            className="title-input"
+            placeholder="Enter vendor name"
+            value={formData.vendorName}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <div className="form-section">
+          <h2>SKU ID</h2>
+          <input
+            type="text"
+            name="title"
+            className="title-input"
+            placeholder="Enter vendor name"
+            value={formData.skuId}
+            onChange={handleInputChange}
+            required
+          />
         </div>
         <div className="form-section">
           <label htmlFor="trip-description-input">Details</label>
@@ -438,7 +476,7 @@ const Page = () => {
         <div className="form-section">
           <h2>Product Sizes</h2>
           <div className="size-selection">
-            {["S", "M", "L", "XL", "2XL", "3XL"].map((size) => (
+            {allSizes.map((size) => (
               <div key={size} className="size-box">
                 <button
                   type="button"
@@ -452,13 +490,40 @@ const Page = () => {
               </div>
             ))}
           </div>
+          <div className="flex items-center gap-2 my-2.5">
+            <input
+              type="text"
+              value={customSize}
+              onChange={(e) => setCustomSize(e.target.value)}
+              placeholder="Add custom size"
+              className="border border-gray-300 rounded-md px-3 py-2 text-sm w-40 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              type="button"
+              onClick={() => {
+                const trimmedSize = customSize.trim().toUpperCase();
+                if (trimmedSize && !allSizes.includes(trimmedSize)) {
+                  setAllSizes([...allSizes, trimmedSize]);
+                  setCustomSize("");
+                }
+              }}
+              className="px-4 py-2 bg-amber-400 text-white rounded-md text-sm hover:bg-amber-500"
+            >
+              Add
+            </button>
+          </div>
         </div>
         <div className="form-section">
           <h2>Product Colors</h2>
           <div className="image-gallery">
             {images.main.map((image, i) => (
               <div className="image-box" key={i}>
-                <Image height={100} width={100} src={image} alt={`Main Image ${i + 1}`} />
+                <Image
+                  height={100}
+                  width={100}
+                  src={image}
+                  alt={`Main Image ${i + 1}`}
+                />
                 <span
                   className="remove-btn"
                   onClick={() => removeImage("main", i)}
@@ -540,7 +605,8 @@ const Page = () => {
                       {images[color].map((image, index) => (
                         <div className="image-box" key={index}>
                           <Image
-                          height={100} width={100}
+                            height={100}
+                            width={100}
                             src={image}
                             alt={`${color} Image ${index + 1}`}
                           />
@@ -742,6 +808,16 @@ const Page = () => {
           </button>
         </div>
       </form>
+      <div className="profit-calculator">
+        your profit from product {formData.currentPrice - formData.vendorprice} / {formData.vendorprice > 0
+          ? (
+              ((formData.currentPrice - formData.vendorprice) /
+                formData.currentPrice) *
+              100
+            ).toFixed(2)
+          : 0}
+        %
+      </div>
     </main>
   );
 };

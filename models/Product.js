@@ -9,8 +9,11 @@ const productSchema = new mongoose.Schema(
     subcategory: { type: String, required: true },
     tag: { type: String },
 
-    oldPrice: { type: String, required: true },
-    currentPrice: { type: String, required: true },
+    oldPrice: { type: Number, required: true },
+    currentPrice: { type: Number, required: true },
+    venderName: { type: String },
+    vendorprice: { type: Number, required: true },
+    skuId: { type: String },
 
     sizes: { type: [String], required: true },
     images: { type: Object, required: true },

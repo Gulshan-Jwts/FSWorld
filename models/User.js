@@ -5,8 +5,6 @@ const affilatorSchema = new mongoose.Schema(
     isLoggedIn: { type: Boolean, default: false },
     isActive: { type: Boolean, default: false },
     balance: { type: Number, default: 0 },
-    image: String,
-    id:String,
 
     sales: [
       {
@@ -33,6 +31,8 @@ const UserSchema = new mongoose.Schema({
   email: String,
   password: String,
   phone: String,
+  image: String,
+  id: String,
   isAdmin: {
     type: Boolean,
     default: false,
@@ -42,6 +42,7 @@ const UserSchema = new mongoose.Schema({
     street: String,
     landmark: String,
     district: String,
+    city: String,
     state: String,
     country: {
       type: String,

@@ -17,11 +17,14 @@ const orderSchema = new mongoose.Schema(
     trackingUrl: String,
     courierBy: String,
     affilator: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    status: { type: String, default: "Created" },// can be Completed or RTO
-    isCancelled: Boolean,
+    status: { type: String, default: "Created" }, // can be Completed or RTO
+    cancelled: {
+      status: { type: Boolean, default: false },
+      time: { type: Date, default: Date.now },
+    },
     exchanged: {
-      status: { type: String, default: "initiated" }, // can be initiated/returned/created
-      forProduct: { type: mongoose.Schema.Types.ObjectId, ref: "Order" },
+      status: { type: String, default: "none" }, // can be initiated/returned/created
+      forProduct: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
     },
     purchasedAt: { type: Date, default: Date.now },
   },
