@@ -52,6 +52,7 @@ const Page = () => {
     vendorName: "",
     vendorprice: "",
     skuId: "",
+    profit: 0,
     category: categories[0]?.name || "Womens Wear",
     subcategory: categories[0]?.subcategories[0] || "Saree",
     tag: "New Arrival",
@@ -255,6 +256,13 @@ const Page = () => {
     }
   };
 
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      profit: formData.currentPrice - formData.vendorprice,
+    }));
+  }, [formData.currentPrice, formData.vendorprice]);
+
   return (
     <main className="adminAddItem">
       <ToastContainer position="top-right" autoClose={3000} />
@@ -296,18 +304,35 @@ const Page = () => {
               type="number"
               name="vendorprice"
               className="price-input"
-              placeholder="Enter current price (e.g., &#8377;4999)"
+              placeholder="Enter vendor price (e.g., &#8377;4999)"
               value={formData.vendorprice}
               onChange={handleInputChange}
               required
             />
+            <input
+              type="number"
+              name="profit"
+              className="price-input"
+              placeholder="Enter total profit/margin (e.g., &#8377;4999)"
+              value={formData.profit}
+              onChange={handleInputChange}
+              required
+            />{" "}
+            {formData.vendorprice > 0
+              ? (
+                  ((formData.currentPrice - formData.vendorprice) /
+                    formData.currentPrice) *
+                  100
+                ).toFixed(2)
+              : 0}
+            %
           </div>
         </div>
         <div className="form-section">
           <h2>Vendor Name</h2>
           <input
             type="text"
-            name="title"
+            name="vendorName"
             className="title-input"
             placeholder="Enter vendor name"
             value={formData.vendorName}
@@ -319,9 +344,9 @@ const Page = () => {
           <h2>SKU ID</h2>
           <input
             type="text"
-            name="title"
+            name="skuId"
             className="title-input"
-            placeholder="Enter vendor name"
+            placeholder="Enter SKU no."
             value={formData.skuId}
             onChange={handleInputChange}
             required
@@ -703,6 +728,20 @@ const Page = () => {
           </div>
         </div>
         <div className="form-section">
+          <h2>Main color Placeholder</h2>
+          <input
+            type="text"
+            name="maincolor"
+            className="title-input"
+            placeholder="any name for the main color"
+            value={formData.maincolor}
+            onChange={() => {
+              setImages((prev) => ({ ...prev, maincolor: e.target.value }));
+            }}
+            required
+          />
+        </div>
+        <div className="form-section">
           <h2>Category</h2>
           <div className="category-selection">
             <select
@@ -809,7 +848,9 @@ const Page = () => {
         </div>
       </form>
       <div className="profit-calculator">
-        your profit from product {formData.currentPrice - formData.vendorprice} / {formData.vendorprice > 0
+        your profit from product {formData.currentPrice - formData.vendorprice}{" "}
+        /{" "}
+        {formData.vendorprice > 0
           ? (
               ((formData.currentPrice - formData.vendorprice) /
                 formData.currentPrice) *

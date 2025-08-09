@@ -14,7 +14,8 @@ const productSchema = new mongoose.Schema(
     venderName: { type: String },
     vendorprice: { type: Number, required: true },
     skuId: { type: String },
-
+    profit : { type: Number, default: 0 },
+    
     sizes: { type: [String], required: true },
     images: { type: Object, required: true },
     searchable: { type: [String], default: [] },
