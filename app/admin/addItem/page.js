@@ -613,94 +613,98 @@ const Page = () => {
           <div className="color-selection">
             {Object.keys(images).map(
               (color, index) =>
-                color !== "main" && (
-                  <div key={index} className="color-section">
-                    <div className="color-header">
-                      <h2>{color}</h2>
-                      <button
-                        type="button"
-                        className="delete-color-btn"
-                        onClick={() => removeColor(color)}
-                        title={`Remove ${color}`}
-                      >
-                        <RiDeleteBinLine />
-                      </button>
-                    </div>
-                    <div className="image-gallery">
-                      {images[color].map((image, index) => (
-                        <div className="image-box" key={index}>
-                          <Image
-                            height={100}
-                            width={100}
-                            src={image}
-                            alt={`${color} Image ${index + 1}`}
-                          />
-                          <span
-                            className="remove-btn"
-                            onClick={() => removeImage(color, index)}
-                          >
-                            <RiCloseLine />
-                          </span>
-                        </div>
-                      ))}
-                      <div className="image-box add-image">
-                        <UploadButton
-                          endpoint="imageUploader"
-                          autoUpload={true}
-                          onUploadBegin={() => {
-                            setUploading((prev) => ({
-                              ...prev,
-                              [color]: true,
-                            }));
-                            toast.info("Uploading image...");
-                          }}
-                          appearance={{
-                            label: "custom-dropzone-label",
-                            button: "custom-dropzone-button",
-                          }}
-                          onClientUploadComplete={(res) => {
-                            handleImageUpload(color, res);
-                          }}
-                          onUploadError={(error) => {
-                            setUploading((prev) => ({
-                              ...prev,
-                              [color]: false,
-                            }));
-                            toast.error(`Upload failed: ${error.message}`);
-                          }}
-                          content={{
-                            button({ ready }) {
-                              return uploading[color] ? (
-                                <div className="uploading-loader">
-                                  <RiLoader2Line />
-                                </div>
-                              ) : (
-                                ready && (
-                                  <div className="add-image-content">
-                                    <svg
-                                      className="singleSvg"
-                                      fill="none"
-                                      stroke="currentColor"
-                                      viewBox="0 0 24 24"
-                                    >
-                                      <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M12 4v16m8-8H4"
-                                      />
-                                    </svg>
+                color !== "main" &&
+                color !==
+                  "maincolor" && (
+                    <div key={index} className="color-section">
+                      <div className="color-header">
+                        <h2>{color}</h2>
+                        <button
+                          type="button"
+                          className="delete-color-btn"
+                          onClick={() => removeColor(color)}
+                          title={`Remove ${color}`}
+                        >
+                          <RiDeleteBinLine />
+                        </button>
+                      </div>
+                      <div className="image-gallery">
+                        {console.log(color, "maincolor")}
+                        {color !== "maincolor" &&
+                          images[color].map((image, index) => (
+                            <div className="image-box" key={index}>
+                              <Image
+                                height={100}
+                                width={100}
+                                src={image}
+                                alt={`${color} Image ${index + 1}`}
+                              />
+                              <span
+                                className="remove-btn"
+                                onClick={() => removeImage(color, index)}
+                              >
+                                <RiCloseLine />
+                              </span>
+                            </div>
+                          ))}
+                        <div className="image-box add-image">
+                          <UploadButton
+                            endpoint="imageUploader"
+                            autoUpload={true}
+                            onUploadBegin={() => {
+                              setUploading((prev) => ({
+                                ...prev,
+                                [color]: true,
+                              }));
+                              toast.info("Uploading image...");
+                            }}
+                            appearance={{
+                              label: "custom-dropzone-label",
+                              button: "custom-dropzone-button",
+                            }}
+                            onClientUploadComplete={(res) => {
+                              handleImageUpload(color, res);
+                            }}
+                            onUploadError={(error) => {
+                              setUploading((prev) => ({
+                                ...prev,
+                                [color]: false,
+                              }));
+                              toast.error(`Upload failed: ${error.message}`);
+                            }}
+                            content={{
+                              button({ ready }) {
+                                return uploading[color] ? (
+                                  <div className="uploading-loader">
+                                    <RiLoader2Line />
                                   </div>
-                                )
-                              );
-                            },
-                          }}
-                          className="custom-upload-btn"
-                        />
+                                ) : (
+                                  ready && (
+                                    <div className="add-image-content">
+                                      <svg
+                                        className="singleSvg"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                      >
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          strokeWidth="2"
+                                          d="M12 4v16m8-8H4"
+                                        />
+                                      </svg>
+                                    </div>
+                                  )
+                                );
+                              },
+                            }}
+                            className="custom-upload-btn"
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )
+                  )
             )}
             <div className="color-input">
               <input
@@ -735,7 +739,7 @@ const Page = () => {
             className="title-input"
             placeholder="any name for the main color"
             value={formData.maincolor}
-            onChange={() => {
+            onChange={(e) => {
               setImages((prev) => ({ ...prev, maincolor: e.target.value }));
             }}
             required
