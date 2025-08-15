@@ -4,11 +4,7 @@ import User from "@/models/User";
 
 export async function POST(req) {
   try {
-    const { email } = await req.json();
-
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const email = req.headers.get("x-user-email");
     await connectMongo();
 
     const user = await User.findOne({ email });

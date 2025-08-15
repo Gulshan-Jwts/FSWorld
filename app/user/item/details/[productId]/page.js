@@ -153,6 +153,9 @@ const Page = () => {
                   height={80}
                   className="color-option-image"
                 />
+                <div className="color-option-label text-center text-shadow-sky-700 text-sm my-2.5">
+                  {key !== "main"? key: product.images.maincolor || "Main Color Name"}
+                </div>
               </div>
             ))}
           </div>
@@ -251,7 +254,6 @@ const Page = () => {
               }}
             />
           </div>
-
         </div>
       </div>
 

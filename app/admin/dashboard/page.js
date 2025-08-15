@@ -293,10 +293,10 @@ const Page = () => {
                   </p>
                   <div className="colors">
                     {Object.keys(product.images || {})
-                      .filter((key) => key !== "main")
+                      .filter((key) => key !== "maincolor")
                       .map((color) => (
                         <span key={color} className="chip">
-                          {color}
+                          {color !== "main" ? color : product.images.maincolor || "Main Color"}
                         </span>
                       ))}
                   </div>

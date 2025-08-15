@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-import User from "@/models/User"; // Mongoose model
+import Affilator from "@/models/Affilator"; // Mongoose model
 import connectMongo from "@/lib/connectMongo";
 
 export async function POST(req) {
@@ -17,22 +17,19 @@ export async function POST(req) {
 
     await connectMongo();
 
-    let user = await User.findOne({ email });
+    let user = await Affilator.findOne({ email });
 
     if (!user) {
       const userId = email.split("@")[0];
       const cleaned = userId.replace(/[0-9]/g, "").replace(/\s+/g, "");
       const username =
         cleaned.charAt(0).toUpperCase() + cleaned.slice(1).toLowerCase();
-      user = await User.create({
-        email,
+      user = await Affilator.create({
         username,
-        affilator: {
-          id: userId,
-          isLoggedIn: true,
-          isActive: false,
-          image: picture,
-        },
+        email,
+        image: picture,
+        id: userId,
+        isActive: false,
       });
     }
 

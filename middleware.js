@@ -77,7 +77,8 @@ export async function middleware(request) {
   if (
     (pathname.startsWith("/user") || pathname.startsWith("/api/user")) &&
     !pathname.startsWith("/api/user/login") &&
-    !pathname.startsWith("/api/user/login/verify")
+    !pathname.startsWith("/api/user/getCategories") &&
+    !pathname.startsWith("/api/user/getProducts")
   ) {
     const authHeader = request.headers.get("Authorization");
 
@@ -109,5 +110,5 @@ export async function middleware(request) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/api/admin/:path*", "/affilator/:path*", "/api/affilator/:path*"],
+  matcher: ["/admin/:path*", "/api/admin/:path*", "/affilator/:path*", "/api/affilator/:path*", "/user/:path*", "/api/user/:path*"],
 };
