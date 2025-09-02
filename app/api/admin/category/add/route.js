@@ -4,21 +4,27 @@ import connectMongo from "@/lib/connectMongo";
 
 export async function POST(req) {
   await connectMongo();
-  const { categoryName, subcategoryName } = await req.json();
+  const { categoryName, categoryImage, subcategories } = await req.json();
 
-  if (!categoryName)
-    return NextResponse.json({ error: "Name is required" }, { status: 400 });
+  if (!categoryName) {
+    return NextResponse.json({ error: "Category name is required" }, { status: 400 });
+  }
 
-  const exists = await Category.findOne({ categoryName });
-  if (exists)
-    return NextResponse.json(
-      { error: "Category already exists" },
-      { status: 400 }
-    );
+  const exists = await Category.findOne({ name: categoryName });
+  if (exists) {
+    return NextResponse.json({ error: "Category already exists" }, { status: 400 });
+  }
+
+  const formattedSubcategories = [{
+    name: subcategories,
+    image: ""
+  }]
 
   const category = await Category.create({
-    name:categoryName,
-    subcategories: [subcategoryName],
+    name: categoryName,
+    image: categoryImage || "",
+    subcategories: formattedSubcategories,
   });
+
   return NextResponse.json({ success: true, category });
 }
