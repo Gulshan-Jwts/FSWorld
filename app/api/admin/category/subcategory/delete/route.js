@@ -6,21 +6,33 @@ import connectMongo from "@/lib/connectMongo";
 export async function DELETE(req) {
   await connectMongo();
   const { categoryName, subcategoryName } = await req.json();
-  console.log(categoryName, "category to delete")
 
+  console.log(categoryName, "category to delete");
+
+  // check agar koi product us category + subcategory use kar raha hai
   const productInUse = await Product.findOne({
     category: categoryName,
     subcategory: subcategoryName,
   });
 
   if (productInUse) {
-    return NextResponse.json({ error: "Cannot delete: Subcategory in use" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Cannot delete: Subcategory in use" },
+      { status: 400 }
+    );
   }
 
+  // category fetch karo
   const category = await Category.findOne({ name: categoryName });
-  if (!category) return NextResponse.json({ error: "Category not found" }, { status: 404 });
+  if (!category) {
+    return NextResponse.json({ error: "Category not found" }, { status: 404 });
+  }
 
-  category.subcategories = category.subcategories.filter(sub => sub !== subcategoryName);
+  // filter out matching subcategory object
+  category.subcategories = category.subcategories.filter(
+    (sub) => sub.name !== subcategoryName
+  );
+
   await category.save();
 
   return NextResponse.json({ success: true, category });

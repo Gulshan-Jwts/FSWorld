@@ -4,7 +4,7 @@ import connectMongo from "@/lib/connectMongo";
 
 export async function POST(req) {
   await connectMongo();
-  const { categoryName, categoryImage, subcategories } = await req.json();
+  const { categoryName, categoryImage, subcategoryName } = await req.json();
 
   if (!categoryName) {
     return NextResponse.json({ error: "Category name is required" }, { status: 400 });
@@ -14,9 +14,10 @@ export async function POST(req) {
   if (exists) {
     return NextResponse.json({ error: "Category already exists" }, { status: 400 });
   }
+  console.log(subcategoryName);
 
   const formattedSubcategories = [{
-    name: subcategories,
+    name: subcategoryName,
     image: ""
   }]
 
