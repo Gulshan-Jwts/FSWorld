@@ -75,11 +75,13 @@ export async function middleware(request) {
   
   // User
   if (
-    (pathname.startsWith("/user") || pathname.startsWith("/api/user")) &&
+     (pathname.startsWith("/api/user") ||
+     pathname.startsWith("/api/payment")) &&
     !pathname.startsWith("/api/user/login") &&
     !pathname.startsWith("/api/user/getCategories") &&
     !pathname.startsWith("/api/user/getProducts")
   ) {
+    
     const authHeader = request.headers.get("Authorization");
 
     if (!authHeader?.startsWith("Bearer ")) {
@@ -101,6 +103,7 @@ export async function middleware(request) {
 
     const requestHeaders = new Headers(request.headers);
     requestHeaders.set("x-user-email", payload.email || "");
+    console.log("User email set in headers:", payload.email || "");
 
     return NextResponse.next({
       request: { headers: requestHeaders },

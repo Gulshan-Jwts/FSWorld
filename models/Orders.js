@@ -15,9 +15,9 @@ const orderSchema = new mongoose.Schema(
     totalAmount: Number,
     vendorPrice: Number,
     OrderId: String,
+    chanelOrderId: String,
     shipmentId: String,
     trackingCode: String,
-    trackingUrl: String,
     courierBy: String,
     address: {
       houseNumber: String,
@@ -32,10 +32,10 @@ const orderSchema = new mongoose.Schema(
       pincode: String,
     },
     affilator: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    status: { type: String, default: "Created" }, // can be Completed or RTO
+    status: { type: String, default: "Created" }, // can be Completed,Cancelled,Exchanged or RTO
     cancelled: {
       status: { type: Boolean, default: false },
-      time: { type: Date, default: Date.now },
+      time: Date ,
     },
     wasExchanged: {
       status: { type: Boolean, default: false },
@@ -44,6 +44,14 @@ const orderSchema = new mongoose.Schema(
     exchanged: {
       status: { type: String, default: "none" }, // can be initiated/returned/created
       forProduct: { type: mongoose.Schema.Types.ObjectId, ref: "Order" },
+    },
+    returnInfo: {
+      shipmentId: String,
+      orderId: String,
+      awbCode: String,
+      courierName: String,
+      status: String,
+      createdAt: { type: Date, default: Date.now },
     },
     purchasedAt: { type: Date, default: Date.now },
   },

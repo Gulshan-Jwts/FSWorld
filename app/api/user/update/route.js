@@ -15,24 +15,18 @@ export async function POST(req) {
     }
 
     const body = await req.json();
-    const {
-      phone,
-      streetAddress,
-      city,
-      state,
-      pincode,
-      country,
-      landmark,
-      houseNo,
-    } = body;
+    const { phone, address } = body;
+
+    const { houseNumber, street, landmark, city, state, country, pincode } =
+      address;
 
     const updatedUser = await User.findOneAndUpdate(
       { email },
       {
         phone,
         address: {
-          houseNumber: houseNo,
-          street: streetAddress,
+          houseNumber,
+          street,
           landmark,
           city,
           state,

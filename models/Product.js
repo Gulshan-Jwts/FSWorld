@@ -5,8 +5,12 @@ const productSchema = new mongoose.Schema(
     title: { type: String, required: true },
     description: { type: String, required: true },
 
-    category: { type: String, required: true },
-    subcategory: { type: String, required: true },
+    categoryData: [{
+      _id:false,
+      categoryName: { type: String, required: true },
+      categoryId: { type: mongoose.Schema.Types.ObjectId, ref: "Category", required: true },
+      subcategory: { type: String, required: true },
+     }],
     tag: { type: String },
 
     oldPrice: { type: Number, required: true },

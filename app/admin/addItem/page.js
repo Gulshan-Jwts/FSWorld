@@ -7,7 +7,7 @@ import { Table } from "@tiptap/extension-table";
 import { TableRow } from "@tiptap/extension-table-row";
 import { TableHeader } from "@tiptap/extension-table-header";
 import { TableCell } from "@tiptap/extension-table-cell";
-import { UploadButton, UploadDropzone } from "@uploadthing/react";
+import { UploadButton } from "@uploadthing/react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "@/stylesheets/admin/addItem.css";
@@ -53,8 +53,13 @@ const Page = () => {
     vendorprice: "",
     skuId: "",
     profit: 0,
-    category: categories[0]?.name || "Womens Wear",
-    subcategory: categories[0]?.subcategories[0] || "Saree",
+    categories: [
+      {
+        category: categories[0]?.name || "Womens Wear",
+        subcategory: categories[0]?.subcategories[0] || "Saree",
+        categoryId: categories[0]?._id || "",
+      },
+    ],
     tag: "New Arrival",
     shiningEffect: false,
     searchable: [],
@@ -73,7 +78,7 @@ const Page = () => {
   useEffect(() => {
     setFormData((prev) => ({
       ...prev,
-      category: categories[0]?.name || "Womens Wear",
+      categories: [categories[0]?.name || "Womens Wear"],
       subcategory: categories[0]?.subcategories[0] || "Saree",
     }));
   }, [categories]);
@@ -83,6 +88,63 @@ const Page = () => {
     setFormData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  const [selectedCategoryId, setSelectedCategoryId] = useState("");
+  const [selectedSubcategory, setSelectedSubcategory] = useState("");
+  const [tableData, setTableData] = useState([]);
+
+  const selectedCategoryObj = categories.find(
+    (cat) => cat._id === selectedCategoryId
+  );
+
+  const handleAdd = (e) => {
+    e.preventDefault();
+    if (!selectedCategoryId || !selectedSubcategory) return;
+
+    const newRow = {
+      categoryId: selectedCategoryId,
+      category: selectedCategoryObj?.name,
+      subcategory: selectedSubcategory,
+    };
+
+    // prevent duplicate
+    const exists = tableData.some(
+      (row) =>
+        row.categoryId === newRow.categoryId &&
+        row.subcategory === newRow.subcategory
+    );
+
+    if (!exists) {
+      setTableData([...tableData, newRow]);
+    }
+
+    // reset inputs
+    setSelectedCategoryId("");
+    setSelectedSubcategory("");
+  };
+
+  useEffect(() => {
+    setFormData((prev) => ({ ...prev, categories: tableData }));
+  }, [tableData]);
+
+  const handleDelete = (index, e) => {
+    console.log(formData, tableData);
+    e.preventDefault();
+    setTableData(tableData.filter((_, i) => i !== index));
+  };
+
+  const handlesearchableChange = (e) => {
+    e.preventDefault();
+    const value = e.target.value;
+    setsearchable(value);
+    setFormData((prev) => ({
+      ...prev,
+      searchable: value
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean),
     }));
   };
 
@@ -111,28 +173,6 @@ const Page = () => {
   useEffect(() => {
     setFormData((prev) => ({ ...prev, description: editorData }));
   }, [editorData]);
-
-  const handleCategoryChange = (e) => {
-    const category = e.target.value;
-    setFormData((prev) => ({
-      ...prev,
-      category,
-      subcategory: subcategories[category][0],
-    }));
-  };
-
-  const handlesearchableChange = (e) => {
-    e.preventDefault();
-    const value = e.target.value;
-    setsearchable(value);
-    setFormData((prev) => ({
-      ...prev,
-      searchable: value
-        .split(",")
-        .map((item) => item.trim())
-        .filter(Boolean),
-    }));
-  };
 
   const toggleSize = (size) => {
     setFormData((prev) => ({
@@ -198,6 +238,8 @@ const Page = () => {
     if (!formData.description) return "Description is required.";
     if (!images.main || images.main.length === 0)
       return "At least one main image is required.";
+    if (formData.categories.length === 0)
+      return "At least one category is required.";
     return null;
   };
 
@@ -216,6 +258,12 @@ const Page = () => {
           images,
         })
       );
+      const categoryMapped = tableData.map((row) => ({
+        categoryId: row.categoryId,
+        categoryName: row.category, // rename here
+        subcategory: row.subcategory,
+      }));
+
       toast.loading("Uploading product...");
       const res = await fetch("/api/admin/items/add", {
         method: "POST",
@@ -224,6 +272,7 @@ const Page = () => {
         },
         body: JSON.stringify({
           ...formData,
+          categoryData: categoryMapped,
           images,
         }),
       });
@@ -233,18 +282,6 @@ const Page = () => {
       if (data.success) {
         toast.dismiss();
         toast.success("Product added successfully!");
-        // setFormData({
-        //   title: "",
-        //   oldPrice: "",
-        //   currentPrice: "",
-        //   description: "",
-        //   sizes: ["S", "M", "L"],
-        //   category: "Womens Wear",
-        //   subcategory: "Saree",
-        //   tag: "New Arrival",
-        //   shiningEffect: false,
-        //   inStock: true,
-        // });
       } else {
         toast.dismiss();
         toast.error(data.message || "Failed to add product.");
@@ -614,97 +651,94 @@ const Page = () => {
             {Object.keys(images).map(
               (color, index) =>
                 color !== "main" &&
-                color !==
-                  "maincolor" && (
-                    <div key={index} className="color-section">
-                      <div className="color-header">
-                        <h2>{color}</h2>
-                        <button
-                          type="button"
-                          className="delete-color-btn"
-                          onClick={() => removeColor(color)}
-                          title={`Remove ${color}`}
-                        >
-                          <RiDeleteBinLine />
-                        </button>
-                      </div>
-                      <div className="image-gallery">
-                        {console.log(color, "maincolor")}
-                        {color !== "maincolor" &&
-                          images[color].map((image, index) => (
-                            <div className="image-box" key={index}>
-                              <Image
-                                height={100}
-                                width={100}
-                                src={image}
-                                alt={`${color} Image ${index + 1}`}
-                              />
-                              <span
-                                className="remove-btn"
-                                onClick={() => removeImage(color, index)}
-                              >
-                                <RiCloseLine />
-                              </span>
-                            </div>
-                          ))}
-                        <div className="image-box add-image">
-                          <UploadButton
-                            endpoint="imageUploader"
-                            autoUpload={true}
-                            onUploadBegin={() => {
-                              setUploading((prev) => ({
-                                ...prev,
-                                [color]: true,
-                              }));
-                              toast.info("Uploading image...");
-                            }}
-                            appearance={{
-                              label: "custom-dropzone-label",
-                              button: "custom-dropzone-button",
-                            }}
-                            onClientUploadComplete={(res) => {
-                              handleImageUpload(color, res);
-                            }}
-                            onUploadError={(error) => {
-                              setUploading((prev) => ({
-                                ...prev,
-                                [color]: false,
-                              }));
-                              toast.error(`Upload failed: ${error.message}`);
-                            }}
-                            content={{
-                              button({ ready }) {
-                                return uploading[color] ? (
-                                  <div className="uploading-loader">
-                                    <RiLoader2Line />
-                                  </div>
-                                ) : (
-                                  ready && (
-                                    <div className="add-image-content">
-                                      <svg
-                                        className="singleSvg"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                      >
-                                        <path
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                          strokeWidth="2"
-                                          d="M12 4v16m8-8H4"
-                                        />
-                                      </svg>
-                                    </div>
-                                  )
-                                );
-                              },
-                            }}
-                            className="custom-upload-btn"
+                color !== "maincolor" && (
+                  <div key={index} className="color-section">
+                    <div className="color-header">
+                      <h2>{color}</h2>
+                      <button
+                        type="button"
+                        className="delete-color-btn"
+                        onClick={() => removeColor(color)}
+                        title={`Remove ${color}`}
+                      >
+                        <RiDeleteBinLine />
+                      </button>
+                    </div>
+                    <div className="image-gallery">
+                      {images[color].map((image, index) => (
+                        <div className="image-box" key={index}>
+                          <Image
+                            height={100}
+                            width={100}
+                            src={image}
+                            alt={`${color} Image ${index + 1}`}
                           />
+                          <span
+                            className="remove-btn"
+                            onClick={() => removeImage(color, index)}
+                          >
+                            <RiCloseLine />
+                          </span>
                         </div>
+                      ))}
+                      <div className="image-box add-image">
+                        <UploadButton
+                          endpoint="imageUploader"
+                          autoUpload={true}
+                          onUploadBegin={() => {
+                            setUploading((prev) => ({
+                              ...prev,
+                              [color]: true,
+                            }));
+                            toast.info("Uploading image...");
+                          }}
+                          appearance={{
+                            label: "custom-dropzone-label",
+                            button: "custom-dropzone-button",
+                          }}
+                          onClientUploadComplete={(res) => {
+                            handleImageUpload(color, res);
+                          }}
+                          onUploadError={(error) => {
+                            setUploading((prev) => ({
+                              ...prev,
+                              [color]: false,
+                            }));
+                            toast.error(`Upload failed: ${error.message}`);
+                          }}
+                          content={{
+                            button({ ready }) {
+                              return uploading[color] ? (
+                                <div className="uploading-loader">
+                                  <RiLoader2Line />
+                                </div>
+                              ) : (
+                                ready && (
+                                  <div className="add-image-content">
+                                    <svg
+                                      className="singleSvg"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M12 4v16m8-8H4"
+                                      />
+                                    </svg>
+                                  </div>
+                                )
+                              );
+                            },
+                          }}
+                          className="custom-upload-btn"
+                        />
                       </div>
                     </div>
-                  )
+                  </div>
+                )
             )}
             <div className="color-input">
               <input
@@ -746,37 +780,85 @@ const Page = () => {
           />
         </div>
         <div className="form-section">
-          <h2>Category</h2>
-          <div className="category-selection">
-            <select
-              name="category"
-              value={formData.category}
-              onChange={handleCategoryChange}
-              className="category-select"
-            >
-              {categories.map((cat) => (
-                <option key={cat._id} value={cat.name}>
-                  {cat.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <h2>Subcategory</h2>
-          <div className="subcategory-selection">
-            <select
-              name="subcategory"
-              value={formData.subcategory}
-              onChange={handleInputChange}
-              className="category-select"
-            >
-              {Object.keys(subcategories).length !== 0 &&
-                subcategories[formData.category] &&
-                subcategories[formData.category].map((subcat) => (
-                  <option key={subcat} value={subcat}>
-                    {subcat}
+          <div className="p-6 max-w-2xl mx-auto">
+            <h2 className="text-xl font-semibold mb-4">Assign Categories</h2>
+
+            {/* Dropdowns */}
+            <div className="flex gap-4 mb-4">
+              <select
+                className="border rounded px-3 py-2 w-1/3"
+                value={selectedCategoryId}
+                onChange={(e) => {
+                  setSelectedCategoryId(e.target.value);
+                  setSelectedSubcategory("");
+                }}
+              >
+                <option value="">Select Category</option>
+                {categories.map((cat) => (
+                  <option key={cat._id} value={cat._id}>
+                    {cat.name}
                   </option>
                 ))}
-            </select>
+              </select>
+
+              <select
+                className="border rounded px-3 py-2 w-1/3"
+                value={selectedSubcategory}
+                onChange={(e) => setSelectedSubcategory(e.target.value)}
+                disabled={!selectedCategoryObj}
+              >
+                <option value="">Select Subcategory</option>
+                {selectedCategoryObj?.subcategories.map((sub) => (
+                  <option key={sub.name} value={sub.name}>
+                    {sub.name}
+                  </option>
+                ))}
+              </select>
+
+              <button
+                onClick={handleAdd}
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              >
+                Add
+              </button>
+            </div>
+
+            {/* Table */}
+            <table className="w-full border-collapse border">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="border px-4 py-2 text-left">Category</th>
+                  <th className="border px-4 py-2 text-left">Subcategory</th>
+                  <th className="border px-4 py-2">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tableData.map((row, index) => (
+                  <tr key={index} className="hover:bg-gray-50">
+                    <td className="border px-4 py-2">{row.category}</td>
+                    <td className="border px-4 py-2">{row.subcategory}</td>
+                    <td className="border px-4 py-2 text-center">
+                      <button
+                        onClick={(e) => handleDelete(index, e)}
+                        className="text-red-500 hover:underline"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+                {tableData.length === 0 && (
+                  <tr>
+                    <td
+                      colSpan="3"
+                      className="text-center py-3 text-gray-500 border"
+                    >
+                      No categories assigned
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
         <div className="form-section">

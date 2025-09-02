@@ -1,6 +1,6 @@
 import Razorpay from "razorpay";
 import { NextResponse } from "next/server";
-import crypto from "crypto";
+import User from "@/models/User";
 
 export async function POST(req) {
   try {
@@ -11,11 +11,25 @@ export async function POST(req) {
       key_secret: process.env.RAZORPAY_KEY_SECRET,
     });
 
-    const options = {
+    let options = {
       amount: amount * 100,
       currency,
       receipt: receipt || "receipt_" + Date.now(),
     };
+
+    const usermail = req.headers.get("x-user-email");
+    if (!usermail) {
+      return NextResponse.json(
+        { error: "User not authenticated" },
+        { status: 401 }
+      );
+    }
+    const user = await User.findOne({ email: usermail });
+    // if (user.Orders.length === 0) {
+    //   options.amount = Math.round(amount - (amount / 100 * 15));
+    // }else{
+    //   options.amount = Math.round(amount - (amount / 100 * 10));
+    // }
 
     const order = await razorpay.orders.create(options);
 

@@ -25,13 +25,21 @@ const UserSchema = new mongoose.Schema({
   },
   cart: [
     {
+      _id: false,
       productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
       quantity: Number,
+      size: String,
+      color: String,
     },
   ],
   Orders: [
     {
+      _id: false,
       productId: { type: mongoose.Schema.Types.ObjectId, ref: "Order" },
+      size: String,
+      color: String,
+      orderDate: { type: Date, default: Date.now },
+      amount: Number,
     },
   ],
   createdAt: {
