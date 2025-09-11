@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useData } from "@/components/DataContext";
 import "@/stylesheets/admin/categories.css";
 import { toast, ToastContainer } from "react-toastify";
+import { UploadButton } from "@uploadthing/react";
 
 const Page = () => {
   const { products, categories, reload } = useData();
@@ -72,9 +73,14 @@ const Page = () => {
   };
 
   const handleDeleteCategory = async (categoryName) => {
+    const confirm = window.prompt(
+      `type "${categoryName}"?`
+    );
+    
+    if (confirm.toLocaleLowerCase() !== categoryName.toLocaleLowerCase()) {toast.info("aborted deletion"); return};
     try {
-      const hasProducts = products.some(
-        (product) => product.category === categoryName
+      const hasProducts = products.some((product) =>
+        product.categoryData.some((i) => i.categoryName === categoryName)
       );
       if (hasProducts) {
         toast.error(
@@ -102,11 +108,13 @@ const Page = () => {
   };
 
   const handleDeleteSubcategory = async (categoryName, subcategoryName) => {
+    const confirm = window.prompt(
+      `type "${subcategoryName}"?`
+    );
+    if (confirm.toLocaleLowerCase() !== subcategoryName.toLocaleLowerCase()) {toast.info("aborted deletion"); return};
     try {
-      const hasProducts = products.some(
-        (product) =>
-          product.category === categoryName &&
-          product.subcategory === subcategoryName
+      const hasProducts = products.some((product) =>
+        product.categoryData.some((i) => i.subcategory === subcategoryName)
       );
       if (hasProducts) {
         toast.error(
@@ -163,6 +171,61 @@ const Page = () => {
     },
   };
 
+  const handleImageUpload = async (res, categoryName) => {
+    const newImageUrl = res[0]?.ufsUrl;
+    try {
+      const response = await fetch("/api/admin/category/upload", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          categoryName,
+          categoryImage: newImageUrl,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success("Updated Category:", data.category);
+        reload("categories");
+      } else {
+        toast.error("Error:", data.error);
+      }
+    } catch (err) {
+      console.error("Fetch error:", err);
+    }
+  };
+
+  const handleSubImageUpload = async (res, categoryName,subcategoryName) => {
+    const newImageUrl = res[0]?.ufsUrl;
+    try {
+      const response = await fetch("/api/admin/category/subcategory/upload", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          categoryName,
+          subcategoryName,
+          categoryImage: newImageUrl,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success("Updated subCategory:", data.category);
+        reload("categories");
+      } else {
+        toast.error("Error:", data.error);
+      }
+    } catch (err) {
+      console.error("Fetch error:", err);
+    }
+  };
+
   return (
     <motion.main
       className="main-content"
@@ -204,6 +267,13 @@ const Page = () => {
               className="category-header"
               onClick={() => toggleCategory(category._id)}
             >
+              <Image
+                src={category.image || "/images/placeholder.jpg"}
+                alt={category.name}
+                width={80}
+                height={80}
+                className="category-image"
+              />
               <h2>{category.name}</h2>
               <div className="category-actions">
                 <button
@@ -222,6 +292,17 @@ const Page = () => {
                     />
                   </svg>
                 </button>
+                <UploadButton
+                  className="upload-btn"
+                  endpoint="imageUploader"
+                  onUploadBegin={() => toast.info("Uploading image...")}
+                  onClientUploadComplete={(res) =>
+                    handleImageUpload(res, category.name)
+                  }
+                  onUploadError={(error) => {
+                    toast.error(`Upload failed: ${error.message}`);
+                  }}
+                />
                 <svg
                   className={`toggle-icon ${
                     openCategory === category._id ? "open" : ""
@@ -290,7 +371,25 @@ const Page = () => {
                         key={subcategory._id || subcategory.name}
                         className="subcategory-item"
                       >
+                        <Image
+                          src={subcategory.image || "/images/placeholder.jpg"}
+                          alt={subcategory.name}
+                          width={80}
+                          height={80}
+                          className="subcategory-image"
+                        />
                         <p>{subcategory.name}</p>
+                        <UploadButton
+                          className="upload-btn"
+                          endpoint="imageUploader"
+                          onUploadBegin={() => toast.info("Uploading subcategory image...")}
+                          onClientUploadComplete={(res) =>
+                            handleSubImageUpload(res, category.name, subcategory.name)
+                          }
+                          onUploadError={(error) => {
+                            toast.error(`Upload failed: ${error.message}`);
+                          }}
+                        />
                         <button
                           className="delete-btn"
                           onClick={() =>
@@ -318,14 +417,11 @@ const Page = () => {
                   </div>
                   <div className="product-cards">
                     {products
-                      .filter(
-                        (p) =>
-                          p.category === category.name &&
-                          category.subcategories.some(
-                            (sub) => sub.name === p.subcategory
-                          )
+                      .filter((p) =>
+                        p.categoryData.some(
+                          (i) => i.categoryName === category.name
+                        )
                       )
-
                       .map((product) => (
                         <div key={product._id} className="product-card">
                           <Image
@@ -341,7 +437,7 @@ const Page = () => {
                           <div className="product-card-content">
                             <h3>{product.title || "Product"}</h3>
                             <p>
-                              Sub-Category: {product.subcategory || "Unknown"}
+                              Sub-Category: {product.categoryData.map((i) => i.categoryName === category.name ? i.subcategory : "").filter(i => i !== "").join(", ")}
                             </p>
                           </div>
                         </div>

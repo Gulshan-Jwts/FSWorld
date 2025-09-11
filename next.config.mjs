@@ -22,6 +22,61 @@ const nextConfig = {
         hostname: "lh3.googleusercontent.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "i.etsystatic.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "www.berettaaustralia.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "www.berettaaustralia.com.au",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "otcimages.basnop.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "4.imimg.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "i.pinimg.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "rukminim1.flixcart.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "rukminim2.flixcart.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "i.etsystatic.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "tse1.mm.bing.net",
+        pathname: "/**",
+      },
+      // {
+      //   protocol: "https",
+      //   hostname: "googleusercontent",
+      //   pathname: "/**",
+      // },
     ],
   },
 

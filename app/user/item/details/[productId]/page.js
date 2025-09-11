@@ -26,10 +26,21 @@ const Page = () => {
   const product = products.find((p) => p._id === productId) || {};
 
   // Get images for the current variant
+
+  const productCategoryIds =
+    product.categoryData?.map((c) => c.categoryId) || [];
   const currentImages = product.images?.[currentVariant] || [];
 
   const recommendedProducts = products
-    .filter((p) => p.category === product.category && p._id !== productId)
+    .filter((p) => {
+      if (p._id === productId) return false; // skip same product
+      if (!p.categoryData) return false;
+
+      // check if there is any overlap in categoryIds
+      return p.categoryData.some((c) =>
+        productCategoryIds.includes(c.categoryId)
+      );
+    })
     .slice(0, 4);
 
   const handleQuantityChange = (action) => {
@@ -137,7 +148,7 @@ const Page = () => {
 
           {/* Color Variants */}
           <div className="color-variants">
-            {Object.keys(product.images || {}).map((key) => (
+            {Object.keys(product.images || {}).filter(item => item !== "maincolor").map((key) => (
               <div
                 key={key}
                 className={`color-option ${
@@ -147,14 +158,16 @@ const Page = () => {
                 onClick={() => handleVariantChange(key)}
               >
                 <Image
-                  src={product.images[key][0]}
+                  src={key === "maincolor" ? product.images.main[0] : product.images[key][0]}
                   alt={`Variant ${key}`}
                   width={80}
                   height={80}
                   className="color-option-image"
                 />
                 <div className="color-option-label text-center text-shadow-sky-700 text-sm my-2.5">
-                  {key !== "main"? key: product.images.maincolor || "Main Color Name"}
+                  {key !== "main"
+                    ? key
+                    : product.images.maincolor || "Main Color Name"}
                 </div>
               </div>
             ))}

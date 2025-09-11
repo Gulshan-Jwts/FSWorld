@@ -38,7 +38,7 @@ export async function POST(req) {
         };
 
         // internal fetch call
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/place`, {
+        const res = await fetch(`${process.env.BASE_URL}/api/user/place`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

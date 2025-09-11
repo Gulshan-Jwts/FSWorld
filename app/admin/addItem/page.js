@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
@@ -60,7 +60,7 @@ const Page = () => {
         categoryId: categories[0]?._id || "",
       },
     ],
-    tag: "New Arrival",
+    tag: ["New Arrival"],
     shiningEffect: false,
     searchable: [],
     inStock: true,
@@ -184,9 +184,16 @@ const Page = () => {
   };
 
   const selectTag = (tag) => {
-    setFormData((prev) => {
-      return { ...prev, tag };
-    });
+    if (formData.tag.includes(tag)) {
+      setFormData((prev) => {
+        return { ...prev, tag: [...prev.tag.filter((item) => item !== tag)] };
+      });
+    } else {
+      setFormData((prev) => {
+        return { ...prev, tag: [...prev.tag, tag] };
+      });
+    }
+    console.log(formData.tag);
   };
 
   const addColor = () => {
@@ -864,17 +871,21 @@ const Page = () => {
         <div className="form-section">
           <h2>Tags</h2>
           <div className="tags-selection">
-            {["New Arrival", "Popular", "Best Selling", "None"].map((tag) => (
-              <button
-                key={tag}
-                type="button"
-                className={`tag-btn ${formData.tag === tag ? "selected" : ""}`}
-                data-tag={tag.toLowerCase()}
-                onClick={() => selectTag(tag)}
-              >
-                {tag}
-              </button>
-            ))}
+            {["New Arrival", "Popular", "Best Selling", "Featured"].map(
+              (tag) => (
+                <button
+                  key={tag}
+                  type="button"
+                  className={`tag-btn ${
+                    formData.tag.includes(tag) ? "selected" : ""
+                  }`}
+                  data-tag={tag.toLowerCase()}
+                  onClick={() => selectTag(tag)}
+                >
+                  {tag}
+                </button>
+              )
+            )}
           </div>
         </div>
         <div className="form-section">

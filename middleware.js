@@ -18,7 +18,7 @@ export async function middleware(request) {
   const { pathname } = request.nextUrl;
 
   // Admin
-  if ((pathname.startsWith("/admin") || pathname.startsWith("/api/admin")) && !pathname.startsWith("/api/admin/login") && !pathname.startsWith("/admin/login")) {
+  if ((pathname.startsWith("/admin") || pathname.startsWith("/api/admin")) && !pathname.startsWith("/api/admin/login") && !pathname.startsWith("/admin/login") && !pathname.startsWith("/api/admin/banner")) {
     console.log("Admin middleware triggered for path:", pathname);
     const token = request.cookies.get("adminToken")?.value;
 
@@ -79,6 +79,7 @@ export async function middleware(request) {
      pathname.startsWith("/api/payment")) &&
     !pathname.startsWith("/api/user/login") &&
     !pathname.startsWith("/api/user/getCategories") &&
+    !pathname.startsWith("/api/user/getBanners") &&
     !pathname.startsWith("/api/user/getProducts")
   ) {
     
