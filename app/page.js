@@ -19,7 +19,7 @@ const HomePage = () => {
     categories?.map((cat) => ({
       name: cat.name,
       image:
-        products.find((p) => p.category === cat.name)?.images.main[0] ||
+       cat.image ||
         "/images/placeholder.jpg",
       subtitle:
         cat.name === "Kids"

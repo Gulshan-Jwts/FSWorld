@@ -97,7 +97,7 @@ export async function POST(request) {
         { status: 404 }
       );
     }
-    
+
     let finalPrice = product.currentPrice;
 
     if (user.Orders.length === 0) {
@@ -122,7 +122,6 @@ export async function POST(request) {
       address,
       totalAmount: product.currentPrice,
       OrderId: orderId,
-      affilator: affilatorId || undefined,
       wasExchanged: {
         status: wasExchanged ? true : false,
         forProduct: wasExchanged ? wasExchanged : undefined,
@@ -145,7 +144,7 @@ export async function POST(request) {
       pickup_location: process.env.SHIPROCKET_PICKUP_LOCATION,
       billing_customer_name: user.username,
       billing_last_name: user.lastName || "",
-      billing_address: `${address.houseNumber}, ${address.street}, ${
+      billing_address: `${address.houseNumber}, ${address.street}, near ${
         address.landmark || ""
       }`,
       billing_city: address.city,
@@ -165,10 +164,10 @@ export async function POST(request) {
       ],
       payment_method: "Prepaid",
       sub_total: product.currentPrice,
-      length: product.dimensions?.length || 10,
-      breadth: product.dimensions?.breadth || 10,
-      height: product.dimensions?.height || 10,
-      weight: product.weight || 0.5,
+      length: product.dimension?.length,
+      breadth: product.dimension?.breadth,
+      height: product.dimension?.height,
+      weight: product.weight / 1000,
     };
 
     const shiprocketRes = await createShiprocketOrder(
@@ -188,10 +187,16 @@ export async function POST(request) {
     // Step 5: Save all in DB
     order.shipmentId = shiprocketRes.shipment_id || null;
     order.OrderId = shiprocketRes.channel_order_id || null;
-    order.chanelOrderId = shiprocketRes.order_id || null;
+    order.chanelOrderId = shiprocketRes.order_id || "sale ne nahi diya";
     order.courierBy = courierRes.response.data.courier_name || null;
     order.trackingCode = courierRes.response.data.awb_code || null;
     await order.save();
+
+    console.log({
+      order: shiprocketRes,
+      courier: courierRes,
+      invoice: invoiceRes,
+    });
 
     return NextResponse.json(
       {

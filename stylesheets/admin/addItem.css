@@ -449,7 +449,6 @@ main.adminAddItem .image-box.add-image {
   transition: background 0.2s ease;
 }
 
-
 main.adminAddItem .image-box.add-image:hover {
   background: #f0f0f0;
 }
@@ -458,7 +457,7 @@ main.adminAddItem .remove-btn {
   position: absolute;
   top: 4px;
   right: 4px;
-  background: rgba(0,0,0,0.7);
+  background: rgba(0, 0, 0, 0.7);
   color: white;
   border-radius: 50%;
   width: 18px;
@@ -472,7 +471,7 @@ main.adminAddItem .remove-btn {
 }
 
 main.adminAddItem .remove-btn:hover {
-  background: rgba(0,0,0,0.9);
+  background: rgba(0, 0, 0, 0.9);
 }
 
 main.adminAddItem .custom-upload-btn {
@@ -562,7 +561,6 @@ main.adminAddItem .add-color-btn:hover {
 
 /* Custom Dropzone */
 
-
 /* Upload Box */
 main.adminAddItem .image-box.add-image {
   display: flex;
@@ -615,7 +613,7 @@ main.adminAddItem .add-image-content svg {
 
 /* Progress Bar (Dynamic Width) */
 main.adminAddItem .custom-dropzone-button::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
@@ -836,6 +834,34 @@ main.adminAddItem .submit-btn:hover {
     width: 100%;
     max-width: 300px;
   }
+}
+.video-thumbnail {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+  border-radius: 6px;
+}
+
+.video-thumbnail video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  filter: brightness(0.8);
+}
+
+.play-icon-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @media (max-width: 768px) {

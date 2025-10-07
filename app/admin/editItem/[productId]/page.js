@@ -33,8 +33,13 @@ import {
 } from "@remixicon/react";
 import { useData } from "@/components/DataContext";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 
 const Page = () => {
+  const { products, reload } = useData();
+  const { productId } = useParams();
+
+  const productToEdit = products?.find((p) => p._id === productId);
   const { categories } = useData();
   const subcategories = {};
 
@@ -53,6 +58,7 @@ const Page = () => {
     vendorprice: "",
     skuId: "",
     profit: 0,
+    maincolor: "",
     categories: [
       {
         category: categories[0]?.name || "Womens Wear",
@@ -174,6 +180,55 @@ const Page = () => {
     setFormData((prev) => ({ ...prev, description: editorData }));
   }, [editorData]);
 
+  useEffect(() => {
+    if (productToEdit) {
+      const mappedTable =
+        productToEdit.categoryData?.map((c) => ({
+          categoryId: c.categoryId,
+          category: c.categoryName,
+          subcategory: c.subcategory,
+        })) || [];
+
+      if (productToEdit && editor) {
+        editor.commands.setContent(productToEdit.description || "");
+      }
+
+      setFormData({
+        title: productToEdit.title || "",
+        oldPrice: productToEdit.oldPrice || "",
+        currentPrice: productToEdit.currentPrice || "",
+        description: productToEdit.description || "",
+        sizes: productToEdit.sizes || ["S", "M", "L"],
+        venderName: productToEdit.venderName || "",
+        vendorprice: productToEdit.vendorprice || "",
+        skuId: productToEdit.skuId || "",
+        profit: productToEdit.profit || 0,
+        maincolor: productToEdit.maincolor || "",
+        categories:
+          productToEdit.categoryData?.map((c) => ({
+            category: c.categoryName,
+            subcategory: c.subcategory,
+            categoryId: c.categoryId,
+          })) || [],
+        tag: productToEdit.tag?.length ? productToEdit.tag : ["New Arrival"],
+        shiningEffect: productToEdit.shiningEffect || false,
+        searchable: productToEdit.searchable || [],
+        inStock: productToEdit.inStock ?? true,
+      });
+      setAllSizes((prevSizes) =>
+        Array.from(new Set([...prevSizes, ...(productToEdit.sizes || [])]))
+      );
+
+      setImages(productToEdit.images || { main: [] });
+      setsearchable(
+        productToEdit.searchable ? productToEdit.searchable.join(", ") : ""
+      );
+      setEditorData(productToEdit.description || "");
+
+      setTableData(mappedTable);
+    }
+  }, [productToEdit, editor]);
+
   const toggleSize = (size) => {
     setFormData((prev) => ({
       ...prev,
@@ -259,21 +314,22 @@ const Page = () => {
     }
 
     try {
-      console.log(
-        JSON.stringify({
-          ...formData,
-          images,
-        })
-      );
       const categoryMapped = tableData.map((row) => ({
         categoryId: row.categoryId,
         categoryName: row.category, // rename here
         subcategory: row.subcategory,
       }));
 
-      toast.loading("Uploading product...");
-      const res = await fetch("/api/admin/items/add", {
-        method: "POST",
+      console.log({
+          ...formData,
+          categoryData: categoryMapped,
+          images,
+        })
+
+      toast.loading("Updating product...");
+
+      const res = await fetch(`/api/admin/items/update/${productId}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
@@ -289,10 +345,10 @@ const Page = () => {
       if (data.success) {
         toast.dismiss();
         reload("products");
-        toast.success("Product added successfully!");
+        toast.success("Product updated successfully!");
       } else {
         toast.dismiss();
-        toast.error(data.message || "Failed to add product.");
+        toast.error(data.message || "Failed to update product.");
       }
     } catch (err) {
       toast.dismiss();
@@ -398,7 +454,7 @@ const Page = () => {
           />
         </div>
         <div className="form-section">
-          <label htmlFor="trip-description-input">Details</label>
+          <h2>Details</h2>
           {editor && (
             <div className="editor-container">
               <div className="editor-toolbar">
@@ -585,26 +641,57 @@ const Page = () => {
         </div>
         <div className="form-section">
           <h2>Product Colors</h2>
+
+          {/* MAIN IMAGES */}
           <div className="image-gallery">
-            {images.main.map((image, i) => (
-              <div className="image-box" key={i}>
-                <Image
-                  height={100}
-                  width={100}
-                  src={image}
-                  alt={`Main Image ${i + 1}`}
-                />
-                <span
-                  className="remove-btn"
-                  onClick={() => removeImage("main", i)}
-                >
-                  <RiCloseLine />
-                </span>
-              </div>
-            ))}
+            {images.main.map((media, i) => {
+              const isVideo = /\.(mp4|mov|webm|ogg)$/i.test(media);
+              return (
+                <div className="image-box" key={i}>
+                  {isVideo ? (
+                    <div className="video-thumbnail">
+                      <video
+                        src={media}
+                        width={100}
+                        height={100}
+                        muted
+                        preload="metadata"
+                      />
+                      <div className="play-icon-overlay">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="white"
+                          viewBox="0 0 24 24"
+                          stroke="none"
+                          width="28"
+                          height="28"
+                        >
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      </div>
+                    </div>
+                  ) : (
+                    <Image
+                      height={100}
+                      width={100}
+                      src={media}
+                      alt={`Main Image ${i + 1}`}
+                    />
+                  )}
+                  <span
+                    className="remove-btn"
+                    onClick={() => removeImage("main", i)}
+                  >
+                    <RiCloseLine />
+                  </span>
+                </div>
+              );
+            })}
+
+            {/* ADD IMAGE/VIDEO BUTTON */}
             <div className="image-box add-image">
               <UploadButton
-                endpoint="imageUploader"
+                endpoint="mediaUploader"
                 onUploadBegin={() => {
                   setUploading((prev) => ({
                     ...prev,
@@ -655,6 +742,8 @@ const Page = () => {
               />
             </div>
           </div>
+
+          {/* COLOR VARIANTS */}
           <div className="color-selection">
             {Object.keys(images).map(
               (color, index) =>
@@ -672,26 +761,58 @@ const Page = () => {
                         <RiDeleteBinLine />
                       </button>
                     </div>
+
+                    {/* IMAGES/VIDEOS FOR THIS COLOR */}
                     <div className="image-gallery">
-                      {images[color].map((image, index) => (
-                        <div className="image-box" key={index}>
-                          <Image
-                            height={100}
-                            width={100}
-                            src={image}
-                            alt={`${color} Image ${index + 1}`}
-                          />
-                          <span
-                            className="remove-btn"
-                            onClick={() => removeImage(color, index)}
-                          >
-                            <RiCloseLine />
-                          </span>
-                        </div>
-                      ))}
+                      {images[color].map((media, index) => {
+                        const isVideo = /\.(mp4|mov|webm|ogg)$/i.test(media);
+                        console.log(isVideo, media);
+                        return (
+                          <div className="image-box" key={index}>
+                            {isVideo ? (
+                              <div className="video-thumbnail">
+                                <video
+                                  src={media}
+                                  width={100}
+                                  height={100}
+                                  muted
+                                  preload="metadata"
+                                />
+                                <div className="play-icon-overlay">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="white"
+                                    viewBox="0 0 24 24"
+                                    stroke="none"
+                                    width="28"
+                                    height="28"
+                                  >
+                                    <path d="M8 5v14l11-7z" />
+                                  </svg>
+                                </div>
+                              </div>
+                            ) : (
+                              <Image
+                                height={100}
+                                width={100}
+                                src={media}
+                                alt={`${color} Image ${index + 1}`}
+                              />
+                            )}
+                            <span
+                              className="remove-btn"
+                              onClick={() => removeImage(color, index)}
+                            >
+                              <RiCloseLine />
+                            </span>
+                          </div>
+                        );
+                      })}
+
+                      {/* ADD MEDIA BUTTON */}
                       <div className="image-box add-image">
                         <UploadButton
-                          endpoint="imageUploader"
+                          endpoint="mediaUploader"
                           autoUpload={true}
                           onUploadBegin={() => {
                             setUploading((prev) => ({
@@ -748,6 +869,8 @@ const Page = () => {
                   </div>
                 )
             )}
+
+            {/* ADD COLOR INPUT */}
             <div className="color-input">
               <input
                 type="text"
@@ -773,6 +896,7 @@ const Page = () => {
             </div>
           </div>
         </div>
+
         <div className="form-section">
           <h2>Main color Placeholder</h2>
           <input
@@ -782,7 +906,7 @@ const Page = () => {
             placeholder="any name for the main color"
             value={formData.maincolor}
             onChange={(e) => {
-              setImages((prev) => ({ ...prev, maincolor: e.target.value }));
+              setFormData((prev) => ({ ...prev, maincolor: e.target.value }));
             }}
             required
           />

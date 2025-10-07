@@ -40,7 +40,7 @@ async function fetchOrder(order, token) {
   );
   const data = await res.json();
   if (!res.ok) {
-    console.error("Failed to fetch tracking details:", data);
+    console.error("Failed to fetch tracking details:", data, order);
     throw new Error("Failed to fetch tracking details");
   }
   return data;
@@ -91,7 +91,6 @@ function normalizeShiprocketStatus(status) {
   if (s.includes("cancel")) return "cancelled";
   return "in_transit"; // fallback
 }
-
 
 export async function POST(request) {
   try {
@@ -145,7 +144,10 @@ export async function POST(request) {
     }
 
     if (status.includes("delivered") || testPicks === "delivered") {
-      if (order.exchanged.status === "initiated"  || order.exchanged.status === "returned") {
+      if (
+        order.exchanged.status === "initiated" ||
+        order.exchanged.status === "returned"
+      ) {
         console.log("order exchange places");
         order.exchanged.status = "created";
         await order.save();
@@ -189,7 +191,12 @@ export async function POST(request) {
       }
     }
 
-    return NextResponse.json({ success: true, order, cancelledData, data });
+    return NextResponse.json({
+      success: true,
+      order,
+      cancelledData,
+      data: data[cancelledData.data.id],
+    });
   } catch (err) {
     console.error("Tracking API error:", err);
     return NextResponse.json(

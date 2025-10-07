@@ -279,10 +279,18 @@ const Page = () => {
                 />
                 <div className="product-card-content">
                   <h3>{product.title || "Product"}</h3>
-                  <p className="category">
-                    Category: {product.category || "Unknown"}
+                  <div className="category">
+                    Category:{" "}
+                    {product.categoryData.map((item) => (
+                      <div
+                        className="bg-slate-200 inline-block p-1 m-2.5 rounded-xl border-slate-500 border-2 text-slate-500"
+                        key={item.categoryId + item.subcategory}
+                      >
+                        {item.categoryName}&mdash;&gt;{item.subcategory}
+                      </div>
+                    )) || "Unknown"}
                     {product.subcategory ? ` / ${product.subcategory}` : ""}
-                  </p>
+                  </div>
                   <p className="price">&#8377;{product.currentPrice || "0"}</p>
                   <p
                     className={`stock ${
@@ -296,7 +304,9 @@ const Page = () => {
                       .filter((key) => key !== "maincolor")
                       .map((color) => (
                         <span key={color} className="chip">
-                          {color !== "main" ? color : product.images.maincolor || "Main Color"}
+                          {color !== "main"
+                            ? color
+                            : product.images.maincolor || "Main Color"}
                         </span>
                       ))}
                   </div>
@@ -315,6 +325,9 @@ const Page = () => {
                   onClick={() => DeleteItem(product._id)}
                 >
                   Delete
+                </button>
+                <button className="action-btn edit">
+                  <Link href={`/admin/editItem/${product._id}`}>Edit</Link>
                 </button>
               </div>
             </motion.div>

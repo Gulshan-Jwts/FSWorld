@@ -35,10 +35,11 @@ export async function POST(req) {
           productId: item.productId._id,
           size: item.size,
           color: item.color,
+          address: user.address
         };
 
         // internal fetch call
-        const res = await fetch(`${process.env.BASE_URL}/api/user/place`, {
+        const res = await fetch(`${process.env.BASE_URL}/api/user/order/place`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

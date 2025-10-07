@@ -89,45 +89,88 @@ const Page = () => {
             modules={[Navigation, Pagination]}
             navigation
             pagination={{ clickable: true }}
-            loop={currentImages.length > 1} // Only loop if multiple images
+            loop={currentImages.length > 1}
             className="gallery-container"
             style={{ maxWidth: "100%", height: "540px" }}
             ref={swiperRef}
             onSlideChange={(swiper) => setSelectedImageIndex(swiper.realIndex)}
           >
-            {currentImages.map((img, index) => (
-              <SwiperSlide key={index} className="gallery-slide">
-                <Image
-                  src={img}
-                  alt={`${
-                    product.title || "Product"
-                  } - ${currentVariant} Image ${index + 1}`}
-                  width={600}
-                  height={540}
-                  className="gallery-image"
-                  style={{ objectFit: "cover" }}
-                />
-              </SwiperSlide>
-            ))}
+            {currentImages.map((media, index) => {
+              const isVideo = /\.(mp4|mov|webm|ogg)$/i.test(media);
+              return (
+                <SwiperSlide key={index} className="gallery-slide">
+                  {isVideo ? (
+                    <video
+                      src={media}
+                      controls
+                      width={600}
+                      height={540}
+                      className="gallery-video"
+                      style={{ objectFit: "cover" }}
+                    />
+                  ) : (
+                    <Image
+                      src={media}
+                      alt={`${
+                        product.title || "Product"
+                      } - ${currentVariant} Media ${index + 1}`}
+                      width={600}
+                      height={540}
+                      className="gallery-image"
+                      style={{ objectFit: "cover" }}
+                    />
+                  )}
+                </SwiperSlide>
+              );
+            })}
           </Swiper>
+
           <div className="gallery-thumbnails">
-            {currentImages.map((img, index) => (
-              <div
-                key={index}
-                className={`thumbnail ${
-                  selectedImageIndex === index ? "selected" : ""
-                }`}
-                onClick={() => handleThumbnailClick(index)}
-              >
-                <Image
-                  src={img}
-                  alt={`Thumbnail ${index + 1}`}
-                  width={100}
-                  height={100}
-                  className="thumbnail-image"
-                />
-              </div>
-            ))}
+            {currentImages.map((media, index) => {
+              const isVideo = /\.(mp4|mov|webm|ogg)$/i.test(media);
+              return (
+                <div
+                  key={index}
+                  className={`thumbnail ${
+                    selectedImageIndex === index ? "selected" : ""
+                  }`}
+                  onClick={() => handleThumbnailClick(index)}
+                >
+                  {isVideo ? (
+                    <div className="thumbnail-video-wrapper">
+                      <video
+                        src={media}
+                        width={100}
+                        height={100}
+                        muted
+                        className="thumbnail-video"
+                        preload="metadata"
+                      />
+                      <div className="play-icon-overlay">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="white"
+                          viewBox="0 0 24 24"
+                          stroke="none"
+                          width="28"
+                          height="28"
+                        >
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      </div>
+                    </div>
+                  ) : (
+                    <Image
+                      src={media}
+                      alt={`Thumbnail ${index + 1}`}
+                      width={100}
+                      height={100}
+                      className="thumbnail-image"
+                    />
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
 
@@ -148,29 +191,35 @@ const Page = () => {
 
           {/* Color Variants */}
           <div className="color-variants">
-            {Object.keys(product.images || {}).filter(item => item !== "maincolor").map((key) => (
-              <div
-                key={key}
-                className={`color-option ${
-                  currentVariant === key ? "selected" : ""
-                }`}
-                data-color={`variant-${key}`}
-                onClick={() => handleVariantChange(key)}
-              >
-                <Image
-                  src={key === "maincolor" ? product.images.main[0] : product.images[key][0]}
-                  alt={`Variant ${key}`}
-                  width={80}
-                  height={80}
-                  className="color-option-image"
-                />
-                <div className="color-option-label text-center text-shadow-sky-700 text-sm my-2.5">
-                  {key !== "main"
-                    ? key
-                    : product.images.maincolor || "Main Color Name"}
+            {Object.keys(product.images || {})
+              .filter((item) => item !== "maincolor")
+              .map((key) => (
+                <div
+                  key={key}
+                  className={`color-option ${
+                    currentVariant === key ? "selected" : ""
+                  }`}
+                  data-color={`variant-${key}`}
+                  onClick={() => handleVariantChange(key)}
+                >
+                  <Image
+                    src={
+                      key === "maincolor"
+                        ? product.images.main[0]
+                        : product.images[key][0]
+                    }
+                    alt={`Variant ${key}`}
+                    width={80}
+                    height={80}
+                    className="color-option-image"
+                  />
+                  <div className="color-option-label text-center text-shadow-sky-700 text-sm my-2.5">
+                    {key !== "main"
+                      ? key
+                      : product.images.maincolor || "Main Color Name"}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
 
           {/* Size Selector */}

@@ -7,7 +7,6 @@ export async function GET() {
     await connectMongo();
 
     let products = await Product.find();
-
     return NextResponse.json({ products }, { status: 200 });
   } catch (error) {
     return NextResponse.json(

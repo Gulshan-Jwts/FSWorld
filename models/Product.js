@@ -25,10 +25,17 @@ const productSchema = new mongoose.Schema(
     vendorprice: { type: Number, required: true },
     skuId: { type: String },
     profit: { type: Number, default: 0 },
+    maincolor: { type: String, required: true },
 
     sizes: { type: [String], required: true },
     images: { type: Object, required: true },
     searchable: { type: [String], default: [] },
+    dimension: {
+      length: { type: Number, required: true },
+      breadth: { type: Number, required: true },
+      height: { type: Number, required: true },
+    },
+    weight: { type: Number, required: true },
 
     inStock: { type: Boolean, default: true },
     shiningEffect: { type: Boolean, default: false },
