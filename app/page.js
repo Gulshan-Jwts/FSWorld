@@ -18,9 +18,7 @@ const HomePage = () => {
   const categoryData =
     categories?.map((cat) => ({
       name: cat.name,
-      image:
-       cat.image ||
-        "/images/placeholder.jpg",
+      image: cat.image || "/images/placeholder.jpg",
       subtitle:
         cat.name === "Kids"
           ? "Fun and stylish looks for kids"
@@ -95,46 +93,22 @@ const HomePage = () => {
         animate="visible"
         variants={sectionVariants}
       >
-        <div className="container">
-          <h2 className="section-title">Shop by Category</h2>
-          <Swiper
-            modules={[Autoplay, Navigation, Pagination]}
-            spaceBetween={20}
-            slidesPerView={3}
-            autoplay={{ delay: 3000, disableOnInteraction: false }}
-            breakpoints={{
-              320: { slidesPerView: 1, spaceBetween: 10 },
-              640: { slidesPerView: 2, spaceBetween: 15 },
-              1024: { slidesPerView: 3, spaceBetween: 20 },
-            }}
-            
-            style={{ maxWidth: "90%", overflow: "hidden" }}
-            className="categories-slider"
-          >
-            {categoryData.map((category, index) => (
-              <SwiperSlide
-                key={index}
-                style={{
-                  width: "80vw",
-                }}
-              >
-                <div className="category-card">
-                  <Image
-                    src={category.image}
-                    alt={category.name}
-                    width={300}
-                    height={400}
-                    className="category-image"
-                  />
-                  <div className="category-overlay">
-                    <h3 className="category-title">{category.name}</h3>
-                    <p className="category-subtitle">{category.subtitle}</p>
+        <section className="categories">
+          <div className="container">
+            <h2 className="section-title">Browse categories</h2>
+            <div className="categories-slider">
+              {categories.map((cat) => !cat.hidden && (
+                
+                <Link href="#kids" key={cat._id} className="category-card">
+                  <div className="category-image">
+                    <Image  width={100} height={100} src={cat.image} alt="Kids' Clothing" />
                   </div>
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </div>
+                  <h3 className="category-title">{cat.name}</h3>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
       </motion.section>
 
       {/* Products Section */}
