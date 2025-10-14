@@ -264,20 +264,20 @@ const Page = () => {
           {products.map((product) => (
             <motion.div
               key={product._id}
-              className="product-card"
+              className="admin-product-card"
               data-id={product._id}
               variants={cardVariants}
               onClick={() => {}}
             >
               <Link href={`/user/item/details/${product._id}`}>
                 <Image
-                  src={product.images?.main[0] || "/images/placeholder.jpg"}
+                  src={product.images?.main[0].image || "/images/placeholder.jpg"}
                   alt={product.title || "Product"}
                   width={200}
                   height={200}
                   className="product-card-image"
                 />
-                <div className="product-card-content">
+                <div className="admin-product-card-content">
                   <h3>{product.title || "Product"}</h3>
                   <div className="category">
                     Category:{" "}
@@ -319,7 +319,7 @@ const Page = () => {
                   </div>
                 </div>
               </Link>
-              <div className="product-card-actions">
+              <div className="admin-product-card-actions">
                 <button
                   className="action-btn delete"
                   onClick={() => DeleteItem(product._id)}

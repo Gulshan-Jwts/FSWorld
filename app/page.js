@@ -10,38 +10,25 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "@/stylesheets/user/home.css";
 import { useData } from "@/components/DataContext";
+import ProductCard from "@/components/ProductCard";
 
 const HomePage = () => {
-  const { products, categories } = useData();
-
-  // Define categories for display, using dynamic category names
-  const categoryData =
-    categories?.map((cat) => ({
-      name: cat.name,
-      image: cat.image || "/images/placeholder.jpg",
-      subtitle:
-        cat.name === "Kids"
-          ? "Fun and stylish looks for kids"
-          : cat.name === "Womens Wear"
-          ? "Elegant outfits for every occasion"
-          : cat.name === "Mens Wear"
-          ? "Timeless styles for the modern man"
-          : "Explore our latest collection",
-    })) || [];
+  const { products, categories, banners } = useData();
 
   // Filter products for Featured Clothing (mix of tags)
-  const featuredProducts = products
-    .filter((p) => ["New Arrival", "Sale", "Best Seller"].includes(p.tag))
-    .slice(0, 4);
+  const featuredProducts = products.filter(
+    (p) =>
+      !["none"].includes(p.tag) && !["None"].includes(p.tag) && p.tag.length > 0
+  );
 
   // Filter products for New Arrivals (only New Arrival tag)
   const newArrivals = products
-    .filter((p) => p.category === "Mens Wear")
+    .filter((p) => p.tag === "Mens Wear")
     .slice(0, 4);
 
   // Animation variants for sections
   const sectionVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 50 },
     visible: {
       opacity: 1,
       y: 0,
@@ -86,6 +73,43 @@ const HomePage = () => {
         </div>
       </motion.section>
 
+      
+      {/* Banner Section */}
+      <motion.section
+        className="banner"
+        initial="hidden"
+        animate="visible"
+        variants={sectionVariants}
+      >
+        <div className="container">
+          <Swiper
+            modules={[Autoplay, Navigation, Pagination]}
+            spaceBetween={20}
+            slidesPerView={1}
+            navigation
+            pagination={{ clickable: true }}
+            autoplay={{
+              delay: 3000, // 3 seconds
+              disableOnInteraction: false,
+            }}
+            loop={true}
+          >
+            {banners.map((banner) => (
+              <SwiperSlide key={banner.id}>
+                <Image
+                  src={banner.image}
+                  alt={banner.text}
+                  width={1200}
+                  height={300}
+                  className="banner-image w-full h-auto object-cover"
+                  priority
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+      </motion.section>
+
       {/* Categories Section with Swiper.js */}
       <motion.section
         className="categories"
@@ -95,17 +119,24 @@ const HomePage = () => {
       >
         <section className="categories">
           <div className="container">
-            <h2 className="section-title">Browse categories</h2>
+            <h2 className="section-title">Browse Categories</h2>
             <div className="categories-slider">
-              {categories.map((cat) => !cat.hidden && (
-                
-                <Link href="#kids" key={cat._id} className="category-card">
-                  <div className="category-image">
-                    <Image  width={100} height={100} src={cat.image} alt="Kids' Clothing" />
-                  </div>
-                  <h3 className="category-title">{cat.name}</h3>
-                </Link>
-              ))}
+              {categories.map(
+                (cat) =>
+                  !cat.hidden && (
+                    <Link href="#kids" key={cat._id} className="category-card">
+                      <div className="category-image">
+                        <Image
+                          width={100}
+                          height={100}
+                          src={cat.image}
+                          alt="Kids' Clothing"
+                        />
+                      </div>
+                      <h3 className="category-title">{cat.name}</h3>
+                    </Link>
+                  )
+              )}
             </div>
           </div>
         </section>
@@ -131,64 +162,11 @@ const HomePage = () => {
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <Link
-                    href={`/user/item/details/${product._id}`}
-                    className="product-card"
-                  >
-                    <div className="product-image">
-                      <Image
-                        src={product.images.main[0]}
-                        alt={product.title}
-                        width={250}
-                        height={300}
-                        className="product-image"
-                      />
-                      <div
-                        className={`product-badge ${
-                          product.shiningEffect ? "shine" : ""
-                        }`}
-                      >
-                        {product.tag}
-                      </div>
-                    </div>
-                    <div className="product-info">
-                      <p className="product-brand">TFW</p>
-                      <h3 className="product-title">{product.title}</h3>
-                      <div className="product-price">
-                        <span className="price-current">
-                          &#8377;{product.currentPrice}
-                        </span>
-                        <span className="price-original">
-                          &#8377;{product.oldPrice}
-                        </span>
-                      </div>
-                      <button className="add-to-cart">
-                        <span>Add to Cart</span>
-                      </button>
-                    </div>
-                  </Link>
+                  <ProductCard product={product} />
                 </motion.div>
               ))}
             </AnimatePresence>
           </div>
-        </div>
-      </motion.section>
-
-      {/* Banner Section */}
-      <motion.section
-        className="banner"
-        initial="hidden"
-        animate="visible"
-        variants={sectionVariants}
-      >
-        <div className="container">
-          <Image
-            src="/Images/banner.jpg"
-            alt="Promotional Banner"
-            width={1200}
-            height={300}
-            className="banner-image"
-          />
         </div>
       </motion.section>
 

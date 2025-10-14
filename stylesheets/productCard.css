@@ -1,0 +1,190 @@
+.user-product-card {
+  background: var(--bg-card);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+  transition: all 0.3s ease;
+  height: 460px;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  margin: 10px;
+}
+
+.user-product-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-medium);
+}
+
+.user-product-card .product-image {
+  position: relative;
+  height: 280px;
+  overflow: hidden;
+}
+
+.user-product-card .product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Reverted to cover for full, premium look */
+  object-position: center;
+  transition: transform 0.3s ease;
+}
+
+.user-product-card.user-product-card:hover .product-image img {
+  transform: scale(1.05);
+}
+
+.user-product-card .product-badge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  background: var(--accent-gold);
+  color: var(--text-primary);
+  padding: 0.3rem 0.9rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  z-index: 2;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.user-product-card .product-badge.shine {
+  background: linear-gradient(
+    45deg,
+    var(--accent-gold) 0%,
+    #2ec1e6 30%,
+    var(--accent-cyan) 50%,
+     #752ee6 70%,
+    var(--accent-gold) 100%
+  );
+  background-size: 300% 300%;
+  animation: shine 3s ease-in-out infinite;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes shine {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 200% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.user-product-card .product-info {
+  padding: 1rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.user-product-card .product-brand {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.user-product-card .product-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-product-card .product-price {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.user-product-card .price-current {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.user-product-card .price-original {
+  font-size: 0.875rem;
+  color: var(--text-light);
+  text-decoration: line-through;
+}
+
+.user-product-card .add-to-cart {
+  width: 100%;
+  background: var(--text-primary);
+  color: white;
+  border: none;
+  padding: 0.75rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-product-card .add-to-cart:hover {
+  background: var(--accent-cyan);
+  transform: translateY(-1px);
+}
+
+.user-product-card .add-to-cart span {
+  transition: opacity 0.3s ease; /* Text fade transition */
+}
+
+.user-product-card .add-to-cart:hover span {
+  opacity: 0; /* Hide text on hover */
+}
+
+.user-product-card .add-to-cart::before {
+  content: "";
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>')
+    no-repeat center;
+  left: -30px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.user-product-card .add-to-cart:hover::before {
+  opacity: 1;
+  animation: slide-cart 1.2s linear infinite; /* Continuous animation on hover */
+}
+
+@keyframes slide-cart {
+  0% {
+    left: -30px;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    left: calc(100% - 30px);
+    opacity: 0;
+  }
+}

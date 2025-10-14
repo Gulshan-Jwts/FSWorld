@@ -151,7 +151,7 @@ main.adminDashboard .products-grid {
   gap: 1.5rem;
 }
 
-main.adminDashboard .product-card {
+main.adminDashboard .admin-product-card {
   background: var(--bg-card);
   border-radius: 12px;
   overflow: hidden;
@@ -161,61 +161,61 @@ main.adminDashboard .product-card {
   flex-direction: column;
 }
 
-main.adminDashboard .product-card:hover {
+main.adminDashboard .admin-product-card:hover {
   transform: translateY(-5px);
   box-shadow: var(--shadow-large);
 }
 
-main.adminDashboard .product-card img {
+main.adminDashboard .admin-product-card img {
   width: 100%;
   height: 220px;
   object-fit: cover;
   aspect-ratio: 1/1;
 }
 
-main.adminDashboard .product-card-content {
+main.adminDashboard .admin-product-card-content {
   padding: 1.5rem;
   flex-grow: 1;
 }
 
-main.adminDashboard .product-card-content h3 {
+main.adminDashboard .admin-product-card-content h3 {
   font-size: 1.3rem;
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 0.75rem;
 }
 
-main.adminDashboard .product-card-content .price {
+main.adminDashboard .admin-product-card-content .price {
   font-size: 1.2rem;
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 0.5rem;
 }
 
-main.adminDashboard .product-card-content .category,
-main.adminDashboard .product-card-content .stock {
+main.adminDashboard .admin-product-card-content .category,
+main.adminDashboard .admin-product-card-content .stock {
   font-size: 1rem;
   color: var(--text-secondary);
   margin-bottom: 0.5rem;
 }
 
-main.adminDashboard .product-card-content .stock.in-stock {
+main.adminDashboard .admin-product-card-content .stock.in-stock {
   color: #22c55e;
 }
 
-main.adminDashboard .product-card-content .stock.out-stock {
+main.adminDashboard .admin-product-card-content .stock.out-stock {
   color: #ef4444;
 }
 
-main.adminDashboard .product-card-content .colors,
-main.adminDashboard .product-card-content .sizes {
+main.adminDashboard .admin-product-card-content .colors,
+main.adminDashboard .admin-product-card-content .sizes {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-bottom: 0.75rem;
 }
 
-main.adminDashboard .product-card-content .chip {
+main.adminDashboard .admin-product-card-content .chip {
   background: var(--bg-light);
   border: 1px solid var(--border-light);
   padding: 0.3rem 0.75rem;
@@ -224,7 +224,7 @@ main.adminDashboard .product-card-content .chip {
   color: var(--text-secondary);
 }
 
-main.adminDashboard .product-card-actions {
+main.adminDashboard .admin-product-card-actions {
   display: flex;
   gap: 0.75rem;
   padding: 0 1.5rem 1.5rem;
@@ -314,7 +314,7 @@ main.adminDashboard .action-btn.delete:hover {
     grid-template-columns: 1fr;
   }
 
-  main.adminDashboard .product-card img {
+  main.adminDashboard .admin-product-card img {
     height: 160px;
   }
 }
@@ -354,17 +354,17 @@ main.adminDashboard .action-btn.delete:hover {
     font-size: 1.2rem;
   }
 
-  main.adminDashboard .product-card-content h3 {
+  main.adminDashboard .admin-product-card-content h3 {
     font-size: 1.2rem;
   }
 
-  main.adminDashboard .product-card-content .price,
-  main.adminDashboard .product-card-content .category,
-  main.adminDashboard .product-card-content .stock {
+  main.adminDashboard .admin-product-card-content .price,
+  main.adminDashboard .admin-product-card-content .category,
+  main.adminDashboard .admin-product-card-content .stock {
     font-size: 0.95rem;
   }
 
-  main.adminDashboard .product-card-content .chip {
+  main.adminDashboard .admin-product-card-content .chip {
     font-size: 0.85rem;
     padding: 0.25rem 0.6rem;
   }

@@ -11,6 +11,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "@/stylesheets/user/detail-page.css";
 import { useData } from "@/components/DataContext";
+import ProductCard from "@/components/ProductCard";
 
 const Page = () => {
   const { productId } = useParams();
@@ -96,12 +97,12 @@ const Page = () => {
             onSlideChange={(swiper) => setSelectedImageIndex(swiper.realIndex)}
           >
             {currentImages.map((media, index) => {
-              const isVideo = /\.(mp4|mov|webm|ogg)$/i.test(media);
+              const isVideo = media.type === "video/mp4";
               return (
                 <SwiperSlide key={index} className="gallery-slide">
                   {isVideo ? (
                     <video
-                      src={media}
+                      src={media.image}
                       controls
                       width={600}
                       height={540}
@@ -110,7 +111,7 @@ const Page = () => {
                     />
                   ) : (
                     <Image
-                      src={media}
+                      src={media.image}
                       alt={`${
                         product.title || "Product"
                       } - ${currentVariant} Media ${index + 1}`}
@@ -127,7 +128,7 @@ const Page = () => {
 
           <div className="gallery-thumbnails">
             {currentImages.map((media, index) => {
-              const isVideo = /\.(mp4|mov|webm|ogg)$/i.test(media);
+              const isVideo = media.type === "video/mp4";
               return (
                 <div
                   key={index}
@@ -139,7 +140,7 @@ const Page = () => {
                   {isVideo ? (
                     <div className="thumbnail-video-wrapper">
                       <video
-                        src={media}
+                        src={media.Image}
                         width={100}
                         height={100}
                         muted
@@ -161,7 +162,7 @@ const Page = () => {
                     </div>
                   ) : (
                     <Image
-                      src={media}
+                      src={media.Image}
                       alt={`Thumbnail ${index + 1}`}
                       width={100}
                       height={100}
@@ -190,37 +191,40 @@ const Page = () => {
           </div>
 
           {/* Color Variants */}
-          <div className="color-variants">
-            {Object.keys(product.images || {})
-              .filter((item) => item !== "maincolor")
-              .map((key) => (
-                <div
-                  key={key}
-                  className={`color-option ${
-                    currentVariant === key ? "selected" : ""
-                  }`}
-                  data-color={`variant-${key}`}
-                  onClick={() => handleVariantChange(key)}
-                >
-                  <Image
-                    src={
-                      key === "maincolor"
-                        ? product.images.main[0]
-                        : product.images[key][0]
-                    }
-                    alt={`Variant ${key}`}
-                    width={80}
-                    height={80}
-                    className="color-option-image"
-                  />
-                  <div className="color-option-label text-center text-shadow-sky-700 text-sm my-2.5">
-                    {key !== "main"
-                      ? key
-                      : product.images.maincolor || "Main Color Name"}
+          {product.images && Object.keys(product.images).length > 1 && (
+            <div className="color-variants">
+              {Object.keys(product.images || {})
+                .filter((item) => item !== "maincolor")
+                .map((key) => (
+                  <div
+                    key={key}
+                    className={`color-option ${
+                      currentVariant === key ? "selected" : ""
+                    }`}
+                    data-color={`variant-${key}`}
+                    onClick={() => handleVariantChange(key)}
+                  >
+                    {console.log(product.images, product.images.main[0].image)}
+                    <Image
+                      src={
+                        key === "maincolor"
+                          ? product.images.main[0].image
+                          : product.images[key][0].Image
+                      }
+                      alt={`Variant ${key}`}
+                      width={80}
+                      height={80}
+                      className="color-option-image"
+                    />
+                    <div className="color-option-label text-center text-shadow-sky-700 text-sm my-2.5">
+                      {key !== "main"
+                        ? key
+                        : product.images.maincolor || "Main Color Name"}
+                    </div>
                   </div>
-                </div>
-              ))}
-          </div>
+                ))}
+            </div>
+          )}
 
           {/* Size Selector */}
           <div className="size-selector">
@@ -309,7 +313,7 @@ const Page = () => {
 
           {/* Product Description */}
           <div className="product-description">
-            <h3>Description</h3>
+            <h1>Description</h1>
             <div
               dangerouslySetInnerHTML={{
                 __html: product.description || "No description available.",
@@ -329,23 +333,7 @@ const Page = () => {
         <h2>You May Also Like</h2>
         <div className="recommendations-grid">
           {recommendedProducts.map((rec) => (
-            <div key={rec._id} className="recommendation-card">
-              <Link href={`/user/item/details/${rec._id}`}>
-                <Image
-                  src={rec.images?.main[0] || "/images/placeholder.jpg"}
-                  alt={rec.title || "Recommended Product"}
-                  width={300}
-                  height={200}
-                  className="recommendation-image"
-                />
-                <div className="recommendation-card-content">
-                  <h3>{rec.title || "Recommended Product"}</h3>
-                  <div className="recommendation-card-price">
-                    &#8377;{rec.currentPrice || "4,999"}
-                  </div>
-                </div>
-              </Link>
-            </div>
+            <ProductCard key={rec._id} product={rec} showUserActions={true} />
           ))}
         </div>
       </motion.section>

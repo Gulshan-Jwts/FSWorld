@@ -231,9 +231,10 @@ const Page = () => {
   const handleImageUpload = (color, res) => {
     setUploading((prev) => ({ ...prev, [color]: false }));
     const newImageUrl = res[0].ufsUrl;
+    console.log(res[0].type)
     setImages((prev) => ({
       ...prev,
-      [color]: [...prev[color], newImageUrl],
+      [color]: [...prev[color], {image:newImageUrl,type: res[0].type}],
     }));
     toast.success("Image uploaded successfully!");
   };
@@ -586,22 +587,49 @@ const Page = () => {
         <div className="form-section">
           <h2>Product Colors</h2>
           <div className="image-gallery">
-            {images.main.map((image, i) => (
-              <div className="image-box" key={i}>
-                <Image
-                  height={100}
-                  width={100}
-                  src={image}
-                  alt={`Main Image ${i + 1}`}
-                />
-                <span
-                  className="remove-btn"
-                  onClick={() => removeImage("main", i)}
-                >
-                  <RiCloseLine />
-                </span>
-              </div>
-            ))}
+            {images.main.map((media, i) => {
+              const isVideo = media.type === "video";
+              return (
+                <div className="image-box" key={i}>
+                  {isVideo ? (
+                    <div className="video-thumbnail">
+                      <video
+                        src={media.image}
+                        width={100}
+                        height={100}
+                        muted
+                        preload="metadata"
+                      />
+                      <div className="play-icon-overlay">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="white"
+                          viewBox="0 0 24 24"
+                          stroke="none"
+                          width="28"
+                          height="28"
+                        >
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      </div>
+                    </div>
+                  ) : (
+                    <Image
+                      height={100}
+                      width={100}
+                      src={media.image}
+                      alt={`Main Image ${i + 1}`}
+                    />
+                  )}
+                  <span
+                    className="remove-btn"
+                    onClick={() => removeImage("main", i)}
+                  >
+                    <RiCloseLine />
+                  </span>
+                </div>
+              );
+            })}
             <div className="image-box add-image">
               <UploadButton
                 endpoint="imageUploader"
@@ -673,22 +701,50 @@ const Page = () => {
                       </button>
                     </div>
                     <div className="image-gallery">
-                      {images[color].map((image, index) => (
-                        <div className="image-box" key={index}>
-                          <Image
-                            height={100}
-                            width={100}
-                            src={image}
-                            alt={`${color} Image ${index + 1}`}
-                          />
-                          <span
-                            className="remove-btn"
-                            onClick={() => removeImage(color, index)}
-                          >
-                            <RiCloseLine />
-                          </span>
-                        </div>
-                      ))}
+                      {images[color].map((media, index) => {
+                        const isVideo = media.type === "video";
+                        console.log(isVideo, media);
+                        return (
+                          <div className="image-box" key={index}>
+                            {isVideo ? (
+                              <div className="video-thumbnail">
+                                <video
+                                  src={media.image}
+                                  width={100}
+                                  height={100}
+                                  muted
+                                  preload="metadata"
+                                />
+                                <div className="play-icon-overlay">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="white"
+                                    viewBox="0 0 24 24"
+                                    stroke="none"
+                                    width="28"
+                                    height="28"
+                                  >
+                                    <path d="M8 5v14l11-7z" />
+                                  </svg>
+                                </div>
+                              </div>
+                            ) : (
+                              <Image
+                                height={100}
+                                width={100}
+                                src={media.image}
+                                alt={`${color} Image ${index + 1}`}
+                              />
+                            )}
+                            <span
+                              className="remove-btn"
+                              onClick={() => removeImage(color, index)}
+                            >
+                              <RiCloseLine />
+                            </span>
+                          </div>
+                        );
+                      })}
                       <div className="image-box add-image">
                         <UploadButton
                           endpoint="imageUploader"

@@ -72,6 +72,18 @@ const nextConfig = {
         hostname: "tse1.mm.bing.net",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "repository-images.githubusercontent.com",
+        pathname: "/**",
+      },
+      
+      {
+        protocol: "https",
+        hostname: "tse3.mm.bing.net",
+        pathname: "/**",
+      },
+      
       // {
       //   protocol: "https",
       //   hostname: "googleusercontent",

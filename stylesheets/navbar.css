@@ -25,13 +25,13 @@
   display: block;
 }
 
-.nav-links {
+.navLinks {
   display: flex;
   gap: 2rem;
   list-style: none;
 }
 
-.nav-links a {
+.navLinks a {
   color: var(--text-secondary);
   text-decoration: none;
   font-weight: 500;
@@ -41,15 +41,15 @@
   padding-bottom: 0.5rem;
 }
 
-.nav-links a:hover {
+.navLinks a:hover {
   color: var(--text-primary);
 }
 
-.nav-links a.active {
+.navLinks a.active {
   color: var(--text-primary);
 }
 
-.nav-links a.active::after {
+.navLinks a.active::after {
   content: "";
   position: absolute;
   bottom: 0;

@@ -219,7 +219,7 @@ const Page = () => {
         Array.from(new Set([...prevSizes, ...(productToEdit.sizes || [])]))
       );
 
-      setImages(productToEdit.images || { main: [] });
+      setImages(productToEdit.images || { main: {} });
       setsearchable(
         productToEdit.searchable ? productToEdit.searchable.join(", ") : ""
       );
@@ -286,9 +286,10 @@ const Page = () => {
   const handleImageUpload = (color, res) => {
     setUploading((prev) => ({ ...prev, [color]: false }));
     const newImageUrl = res[0].ufsUrl;
+    console.log(res[0])
     setImages((prev) => ({
       ...prev,
-      [color]: [...prev[color], newImageUrl],
+      [color]: [...prev[color], {image:newImageUrl,type: res[0].type}],
     }));
     toast.success("Image uploaded successfully!");
   };
@@ -645,13 +646,13 @@ const Page = () => {
           {/* MAIN IMAGES */}
           <div className="image-gallery">
             {images.main.map((media, i) => {
-              const isVideo = /\.(mp4|mov|webm|ogg)$/i.test(media);
+              const isVideo = media.type === "video/mp4";
               return (
                 <div className="image-box" key={i}>
                   {isVideo ? (
                     <div className="video-thumbnail">
                       <video
-                        src={media}
+                        src={media.image}
                         width={100}
                         height={100}
                         muted
@@ -674,7 +675,7 @@ const Page = () => {
                     <Image
                       height={100}
                       width={100}
-                      src={media}
+                      src={media.image}
                       alt={`Main Image ${i + 1}`}
                     />
                   )}
@@ -765,14 +766,14 @@ const Page = () => {
                     {/* IMAGES/VIDEOS FOR THIS COLOR */}
                     <div className="image-gallery">
                       {images[color].map((media, index) => {
-                        const isVideo = /\.(mp4|mov|webm|ogg)$/i.test(media);
+                        const isVideo = media.type === "video/mp4";
                         console.log(isVideo, media);
                         return (
                           <div className="image-box" key={index}>
                             {isVideo ? (
                               <div className="video-thumbnail">
                                 <video
-                                  src={media}
+                                  src={media.image}
                                   width={100}
                                   height={100}
                                   muted
@@ -795,7 +796,7 @@ const Page = () => {
                               <Image
                                 height={100}
                                 width={100}
-                                src={media}
+                                src={media.image}
                                 alt={`${color} Image ${index + 1}`}
                               />
                             )}

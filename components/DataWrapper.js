@@ -9,6 +9,7 @@ const DataWrapper = ({ children }) => {
   const [products, setProducts] = useState([]);
   const [affilators, setAffilators] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [banners, setBanners] = useState([])
   const [isLoading, setIsLoading] = useState(true);
   const [isLogedIn, setIsLogedIn] = useState(false);
   const [isAdmin, setisAdmin] = useState(false);
@@ -65,6 +66,17 @@ const DataWrapper = ({ children }) => {
     }
   }, []);
 
+  const fetchBanners = useCallback(async () => {
+    try {
+      const res = await fetch("/api/user/getBanners");
+      const data = await res.json();
+      setBanners(data.banners || []);
+      
+    } catch (err) {
+      console.error("Bannes fetch failed:", err);
+    }
+  }, []);
+
   const fetchAffilators = useCallback(async () => {
     if (isAdmin) {
       try {
@@ -100,6 +112,10 @@ const DataWrapper = ({ children }) => {
   }, [fetchProducts]);
 
   useEffect(() => {
+    fetchBanners();
+  }, [fetchBanners]);
+
+  useEffect(() => {
     fetchCategories();
   }, [fetchCategories]);
 
@@ -122,6 +138,7 @@ const DataWrapper = ({ children }) => {
         products,
         categories,
         affilators,
+        banners,
         isAdmin,
         isLoading,
         reload,

@@ -6,6 +6,7 @@ import { useData } from "@/components/DataContext";
 import "@/stylesheets/admin/categories.css";
 import { toast, ToastContainer } from "react-toastify";
 import { UploadButton } from "@uploadthing/react";
+import ProductCard from "@/components/ProductCard";
 
 const Page = () => {
   const { products, categories, reload } = useData();
@@ -423,24 +424,7 @@ const Page = () => {
                         )
                       )
                       .map((product) => (
-                        <div key={product._id} className="product-card">
-                          <Image
-                            src={
-                              product.images?.main[0] ||
-                              "/images/placeholder.jpg"
-                            }
-                            alt={product.title || "Product"}
-                            width={200}
-                            height={200}
-                            className="product-card-image"
-                          />
-                          <div className="product-card-content">
-                            <h3>{product.title || "Product"}</h3>
-                            <p>
-                              Sub-Category: {product.categoryData.map((i) => i.categoryName === category.name ? i.subcategory : "").filter(i => i !== "").join(", ")}
-                            </p>
-                          </div>
-                        </div>
+                       <ProductCard key={product._id} product={product} showUserActions={false} />
                       ))}
                   </div>
                 </motion.div>
