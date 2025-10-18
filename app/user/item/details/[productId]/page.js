@@ -24,9 +24,24 @@ const Page = () => {
   const [currentVariant, setCurrentVariant] = useState("main");
   const swiperRef = useRef(null);
 
+  const videoRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
   const product = products.find((p) => p._id === productId) || {};
 
   // Get images for the current variant
+
+  const handlePlayPause = () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (isPlaying) {
+      video.pause();
+    } else {
+      video.play();
+    }
+    setIsPlaying(!isPlaying);
+  };
 
   const productCategoryIds =
     product.categoryData?.map((c) => c.categoryId) || [];
@@ -101,14 +116,89 @@ const Page = () => {
               return (
                 <SwiperSlide key={index} className="gallery-slide">
                   {isVideo ? (
-                    <video
-                      src={media.image}
-                      controls
-                      width={600}
-                      height={540}
-                      className="gallery-video"
-                      style={{ objectFit: "cover" }}
-                    />
+                    <div className="video player">
+                      <video
+                        src={media.image}
+                        controls={false}
+                        width={600}
+                        ref={videoRef}
+                        height={540}
+                        className="gallery-video"
+                        style={{ objectFit: "cover" }}
+                      />
+                      <div
+                        className="play-icon-overlay-large"
+                        onClick={handlePlayPause}
+                      >
+                        {!isPlaying ? (
+                          <svg
+                            height="200px"
+                            width="200px"
+                            version="1.1"
+                            id="_x32_"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 512 512"
+                            fill="#000000"
+                          >
+                            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                            <g
+                              id="SVGRepo_tracerCarrier"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            ></g>
+                            <g id="SVGRepo_iconCarrier">
+                              <g>
+                                <path
+                                  style={{ fill: "#ccc" }}
+                                  d="M256,0C114.625,0,0,114.625,0,256c0,141.374,114.625,256,256,256c141.374,0,256-114.626,256-256 C512,114.625,397.374,0,256,0z M351.062,258.898l-144,85.945c-1.031,0.626-2.344,0.657-3.406,0.031 c-1.031-0.594-1.687-1.702-1.687-2.937v-85.946v-85.946c0-1.218,0.656-2.343,1.687-2.938c1.062-0.609,2.375-0.578,3.406,0.031 l144,85.962c1.031,0.586,1.641,1.718,1.641,2.89C352.703,257.187,352.094,258.297,351.062,258.898z"
+                                ></path>
+                              </g>
+                            </g>
+                          </svg>
+                        ) : (
+                          <svg
+                            viewBox="-1 0 8 8"
+                            version="1.1"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="#000000"
+                          >
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g
+                              id="SVGRepo_tracerCarrier"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            ></g>
+                            <g id="SVGRepo_iconCarrier">
+                              <title>pause [#1006]</title>{" "}
+                              <desc>Created with Sketch.</desc> <defs> </defs>{" "}
+                              <g
+                                id="Page-1"
+                                stroke="none"
+                                stroke-width="1"
+                                fill="none"
+                                fill-rule="evenodd"
+                              >
+                                <g
+                                  id="Dribbble-Light-Preview"
+                                  transform="translate(-227.000000, -3765.000000)"
+                                  fill="#000000"
+                                >
+                                  <g
+                                    id="icons"
+                                    transform="translate(56.000000, 160.000000)"
+                                  >
+                                    <path
+                                      d="M172,3605 C171.448,3605 171,3605.448 171,3606 L171,3612 C171,3612.552 171.448,3613 172,3613 C172.552,3613 173,3612.552 173,3612 L173,3606 C173,3605.448 172.552,3605 172,3605 M177,3606 L177,3612 C177,3612.552 176.552,3613 176,3613 C175.448,3613 175,3612.552 175,3612 L175,3606 C175,3605.448 175.448,3605 176,3605 C176.552,3605 177,3605.448 177,3606"
+                                      id="pause-[#1006]"
+                                    ></path>
+                                  </g>
+                                </g>
+                              </g>
+                            </g>
+                          </svg>
+                        )}
+                      </div>
+                    </div>
                   ) : (
                     <Image
                       src={media.image}
@@ -140,7 +230,7 @@ const Page = () => {
                   {isVideo ? (
                     <div className="thumbnail-video-wrapper">
                       <video
-                        src={media.Image}
+                        src={media.image}
                         width={100}
                         height={100}
                         muted
@@ -162,7 +252,7 @@ const Page = () => {
                     </div>
                   ) : (
                     <Image
-                      src={media.Image}
+                      src={media.image}
                       alt={`Thumbnail ${index + 1}`}
                       width={100}
                       height={100}
@@ -204,12 +294,11 @@ const Page = () => {
                     data-color={`variant-${key}`}
                     onClick={() => handleVariantChange(key)}
                   >
-                    {console.log(product.images, product.images.main[0].image)}
                     <Image
                       src={
                         key === "maincolor"
                           ? product.images.main[0].image
-                          : product.images[key][0].Image
+                          : product.images[key][0].image
                       }
                       alt={`Variant ${key}`}
                       width={80}
