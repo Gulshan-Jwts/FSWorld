@@ -116,7 +116,7 @@ const Page = () => {
               return (
                 <SwiperSlide key={index} className="gallery-slide">
                   {isVideo ? (
-                    <div className="video player">
+                    <div className="video-player">
                       <video
                         src={media.image}
                         controls={false}
@@ -132,8 +132,8 @@ const Page = () => {
                       >
                         {!isPlaying ? (
                           <svg
-                            height="200px"
-                            width="200px"
+                            height="80px"
+                            width="80px"
                             version="1.1"
                             id="_x32_"
                             xmlns="http://www.w3.org/2000/svg"
@@ -159,14 +159,16 @@ const Page = () => {
                           <svg
                             viewBox="-1 0 8 8"
                             version="1.1"
+                            height="80px"
+                            width="80px"
                             xmlns="http://www.w3.org/2000/svg"
                             fill="#000000"
                           >
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
                             <g
                               id="SVGRepo_tracerCarrier"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
                             ></g>
                             <g id="SVGRepo_iconCarrier">
                               <title>pause [#1006]</title>{" "}
@@ -174,9 +176,9 @@ const Page = () => {
                               <g
                                 id="Page-1"
                                 stroke="none"
-                                stroke-width="1"
+                                strokeWidth="1"
                                 fill="none"
-                                fill-rule="evenodd"
+                                fillRule="evenodd"
                               >
                                 <g
                                   id="Dribbble-Light-Preview"

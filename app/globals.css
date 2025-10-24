@@ -1,4 +1,4 @@
-@import "tailwindcss";
+/*@import "tailwindcss";*/
 
 :root {
   --primary-dark: #1a1a1a;
@@ -24,7 +24,6 @@
   box-sizing: border-box;
 }
 
-@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600&display=swap");
 
 body {
   font-family: "Poppins", -apple-system, BlinkMacSystemFont, sans-serif;
