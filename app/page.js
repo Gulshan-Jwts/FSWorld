@@ -11,6 +11,7 @@ import "swiper/css/pagination";
 import "@/stylesheets/user/home.css";
 import { useData } from "@/components/DataContext";
 import ProductCard from "@/components/ProductCard";
+import { ToastContainer } from "react-toastify";
 
 const HomePage = () => {
   const { products, categories, banners } = useData();
@@ -22,9 +23,7 @@ const HomePage = () => {
   );
 
   // Filter products for New Arrivals (only New Arrival tag)
-  const newArrivals = products
-    .filter((p) => p.tag === "Mens Wear")
-    .slice(0, 4);
+  const newArrivals = products.filter((p) => p.tag === "Mens Wear").slice(0, 4);
 
   // Animation variants for sections
   const sectionVariants = {
@@ -38,6 +37,7 @@ const HomePage = () => {
 
   return (
     <>
+    <ToastContainer />
       {/* Hero Section */}
       <motion.section
         className="hero"
@@ -51,8 +51,6 @@ const HomePage = () => {
         </video>
         <div className="hero-overlay"></div>
         <div className="hero-content">
-          <h1 className="hero-title">Elevate Your Wardrobe</h1>
-          <p className="hero-subtitle">Discover premium clothing with TFW</p>
           <Link href="#products" className="hero-cta">
             Shop Collection
             <svg
@@ -73,7 +71,6 @@ const HomePage = () => {
         </div>
       </motion.section>
 
-      
       {/* Banner Section */}
       <motion.section
         className="banner"
@@ -89,19 +86,20 @@ const HomePage = () => {
             navigation
             pagination={{ clickable: true }}
             autoplay={{
-              delay: 3000, // 3 seconds
+              delay: 300000, // 3 seconds
               disableOnInteraction: false,
             }}
             loop={true}
+            className="banner-slider"
           >
             {banners.map((banner) => (
-              <SwiperSlide key={banner.id}>
+              <SwiperSlide className="slide" key={banner.id}>
                 <Image
                   src={banner.image}
                   alt={banner.text}
-                  width={1200}
-                  height={300}
-                  className="banner-image w-full h-auto object-cover"
+                  width={1100}
+                  height={350}
+                  className="banner-image w-full object-cover"
                   priority
                 />
               </SwiperSlide>

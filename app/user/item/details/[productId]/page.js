@@ -132,13 +132,11 @@ const Page = () => {
                       >
                         {!isPlaying ? (
                           <svg
-                            height="80px"
-                            width="80px"
-                            version="1.1"
-                            id="_x32_"
+                            height="40px"
+                            width="40px"
+                            viewBox="0 0 24 24"
+                            fill="none"
                             xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 512 512"
-                            fill="#000000"
                           >
                             <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
                             <g
@@ -147,22 +145,19 @@ const Page = () => {
                               strokeLinejoin="round"
                             ></g>
                             <g id="SVGRepo_iconCarrier">
-                              <g>
-                                <path
-                                  style={{ fill: "#ccc" }}
-                                  d="M256,0C114.625,0,0,114.625,0,256c0,141.374,114.625,256,256,256c141.374,0,256-114.626,256-256 C512,114.625,397.374,0,256,0z M351.062,258.898l-144,85.945c-1.031,0.626-2.344,0.657-3.406,0.031 c-1.031-0.594-1.687-1.702-1.687-2.937v-85.946v-85.946c0-1.218,0.656-2.343,1.687-2.938c1.062-0.609,2.375-0.578,3.406,0.031 l144,85.962c1.031,0.586,1.641,1.718,1.641,2.89C352.703,257.187,352.094,258.297,351.062,258.898z"
-                                ></path>
-                              </g>
+                              <path
+                                d="M21.4086 9.35258C23.5305 10.5065 23.5305 13.4935 21.4086 14.6474L8.59662 21.6145C6.53435 22.736 4 21.2763 4 18.9671L4 5.0329C4 2.72368 6.53435 1.26402 8.59661 2.38548L21.4086 9.35258Z"
+                                fill="#7e7a89"
+                              ></path>
                             </g>
                           </svg>
                         ) : (
                           <svg
-                            viewBox="-1 0 8 8"
-                            version="1.1"
-                            height="80px"
-                            width="80px"
+                            width="40px"
+                            height="40px"
+                            viewBox="0 0 24 24"
+                            fill="none"
                             xmlns="http://www.w3.org/2000/svg"
-                            fill="#000000"
                           >
                             <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
                             <g
@@ -171,31 +166,14 @@ const Page = () => {
                               strokeLinejoin="round"
                             ></g>
                             <g id="SVGRepo_iconCarrier">
-                              <title>pause [#1006]</title>{" "}
-                              <desc>Created with Sketch.</desc> <defs> </defs>{" "}
-                              <g
-                                id="Page-1"
-                                stroke="none"
-                                strokeWidth="1"
-                                fill="none"
-                                fillRule="evenodd"
-                              >
-                                <g
-                                  id="Dribbble-Light-Preview"
-                                  transform="translate(-227.000000, -3765.000000)"
-                                  fill="#000000"
-                                >
-                                  <g
-                                    id="icons"
-                                    transform="translate(56.000000, 160.000000)"
-                                  >
-                                    <path
-                                      d="M172,3605 C171.448,3605 171,3605.448 171,3606 L171,3612 C171,3612.552 171.448,3613 172,3613 C172.552,3613 173,3612.552 173,3612 L173,3606 C173,3605.448 172.552,3605 172,3605 M177,3606 L177,3612 C177,3612.552 176.552,3613 176,3613 C175.448,3613 175,3612.552 175,3612 L175,3606 C175,3605.448 175.448,3605 176,3605 C176.552,3605 177,3605.448 177,3606"
-                                      id="pause-[#1006]"
-                                    ></path>
-                                  </g>
-                                </g>
-                              </g>
+                              <path
+                                d="M2 6C2 4.11438 2 3.17157 2.58579 2.58579C3.17157 2 4.11438 2 6 2C7.88562 2 8.82843 2 9.41421 2.58579C10 3.17157 10 4.11438 10 6V18C10 19.8856 10 20.8284 9.41421 21.4142C8.82843 22 7.88562 22 6 22C4.11438 22 3.17157 22 2.58579 21.4142C2 20.8284 2 19.8856 2 18V6Z"
+                                fill="#7e7a89"
+                              ></path>
+                              <path
+                                d="M14 6C14 4.11438 14 3.17157 14.5858 2.58579C15.1716 2 16.1144 2 18 2C19.8856 2 20.8284 2 21.4142 2.58579C22 3.17157 22 4.11438 22 6V18C22 19.8856 22 20.8284 21.4142 21.4142C20.8284 22 19.8856 22 18 22C16.1144 22 15.1716 22 14.5858 21.4142C14 20.8284 14 19.8856 14 18V6Z"
+                                fill="#7e7a89"
+                              ></path>
                             </g>
                           </svg>
                         )}
@@ -404,8 +382,8 @@ const Page = () => {
 
           {/* Product Description */}
           <div className="product-description">
-            <h1>Description</h1>
-            <div
+            <h1 className="desc-heading">Description</h1>
+            <div className="dynamic-desc"
               dangerouslySetInnerHTML={{
                 __html: product.description || "No description available.",
               }}

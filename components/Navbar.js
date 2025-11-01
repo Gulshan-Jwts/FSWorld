@@ -75,7 +75,7 @@ const Navbar = () => {
               variants={menuVariants}
             >
               <li>
-                <Link href="#" className="active">
+                <Link href="/" className="active">
                   Home
                 </Link>
               </li>
@@ -84,7 +84,7 @@ const Navbar = () => {
                   index < 4 && (
                     <li key={category._id}>
                       <Link
-                        href={`#${category.name
+                        href={`/item/${category.name
                           .toLowerCase()
                           .replace(" ", "-")}`}
                       >
@@ -146,7 +146,7 @@ const Navbar = () => {
                   disabled
                 />
               </Link>
-              <Link href="/user/profile" className="icon-btn">
+              <Link href="/user/orders" className="icon-btn">
                 <svg
                   viewBox="0 0 24 24"
                   fill="none"

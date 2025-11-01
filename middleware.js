@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 
+import { getToken } from "next-auth/jwt";
+
 const ADMIN_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
 const AFFILATOR_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
 
@@ -18,7 +20,12 @@ export async function middleware(request) {
   const { pathname } = request.nextUrl;
 
   // Admin
-  if ((pathname.startsWith("/admin") || pathname.startsWith("/api/admin")) && !pathname.startsWith("/api/admin/login") && !pathname.startsWith("/admin/login") && !pathname.startsWith("/api/admin/banner")) {
+  if (
+    (pathname.startsWith("/admin") || pathname.startsWith("/api/admin")) &&
+    !pathname.startsWith("/api/admin/login") &&
+    !pathname.startsWith("/admin/login") &&
+    !pathname.startsWith("/api/admin/banner")
+  ) {
     console.log("Admin middleware triggered for path:", pathname);
     const token = request.cookies.get("adminToken")?.value;
 
@@ -40,71 +47,49 @@ export async function middleware(request) {
     });
   }
 
-  // Affilator
-  if (
-    (pathname.startsWith("/affilator") || pathname.startsWith("/api/affilator")) &&
-    !pathname.startsWith("/api/affilator/login") &&
-    !pathname.startsWith("/api/affilator/login/verify")
-  ) {
-    const authHeader = request.headers.get("authorization");
-
-    if (!authHeader?.startsWith("Bearer ")) {
-      return NextResponse.json(
-        { success: false, message: "Unauthorized: Missing or invalid token" },
-        { status: 401 }
-      );
-    }
-
-    const token = authHeader.split(" ")[1];
-    const payload = await verifyJWT(token, AFFILATOR_SECRET);
-
-    if (!payload) {
-      return NextResponse.json(
-        { success: false, message: "Unauthorized: Invalid or expired token" },
-        { status: 401 }
-      );
-    }
-
-    const requestHeaders = new Headers(request.headers);
-    requestHeaders.set("x-user-email", payload.email || "");
-
-    return NextResponse.next({
-      request: { headers: requestHeaders },
-    });
-  }
-  
   // User
+
   if (
-     (pathname.startsWith("/api/user") ||
-     pathname.startsWith("/api/payment")) &&
+    (pathname.startsWith("/api/user") || pathname.startsWith("/api/payment")) &&
     !pathname.startsWith("/api/user/login") &&
     !pathname.startsWith("/api/user/getCategories") &&
     !pathname.startsWith("/api/user/getBanners") &&
     !pathname.startsWith("/api/user/getProducts")
   ) {
-    
     const authHeader = request.headers.get("Authorization");
 
-    if (!authHeader?.startsWith("Bearer ")) {
+    if (authHeader?.startsWith("Bearer ")) {
+      const token = authHeader.split(" ")[1];
+      const payload = await verifyJWT(token, AFFILATOR_SECRET);
+      if (!payload) {
       return NextResponse.json(
-        { success: false, message: "Unauthorized: Missing or invalid token" },
+        { success: false, message: "Unauthorized: Invalid or expired token" },
         { status: 401 }
       );
     }
+      const requestHeaders = new Headers(request.headers);
+      requestHeaders.set(
+        "x-user-email",
+        payload.email || ""
+      );
+    }
 
-    const token = authHeader.split(" ")[1];
-    const payload = await verifyJWT(token, AFFILATOR_SECRET);
+    const sessionToken = await getToken({ req: request, secret: process.env.AUTH_SECRET });
 
-    if (!payload) {
+    if (!sessionToken) {
       return NextResponse.json(
         { success: false, message: "Unauthorized: Invalid or expired token" },
         { status: 401 }
       );
     }
 
+    console.log(sessionToken.email,"email of user")
+
     const requestHeaders = new Headers(request.headers);
-    requestHeaders.set("x-user-email", payload.email || "");
-    console.log("User email set in headers:", payload.email || "");
+    requestHeaders.set(
+      "x-user-email",
+      sessionToken.email || ""
+    );
 
     return NextResponse.next({
       request: { headers: requestHeaders },
@@ -114,5 +99,12 @@ export async function middleware(request) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/api/admin/:path*", "/affilator/:path*", "/api/affilator/:path*", "/user/:path*", "/api/user/:path*"],
+  matcher: [
+    "/admin/:path*",
+    "/api/admin/:path*",
+    "/affilator/:path*",
+    "/api/affilator/:path*",
+    "/user/:path*",
+    "/api/user/:path*",
+  ],
 };

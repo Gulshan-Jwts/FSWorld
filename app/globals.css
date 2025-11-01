@@ -38,6 +38,7 @@ h3,
 .add-product-btn,
 .action-btn,
 .overview-card h3 {
+  font-size: auto;
   font-family: var(--font-exo), sans-serif;
 }
 

@@ -32,10 +32,7 @@ export default function RootLayout({ children }) {
 		<html lang='en' className={exo.variable}>
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-				<Script
-  src="https://cdn.tailwindcss.com"
-  strategy="beforeInteractive"
-/>
+				  <script src="https://cdn.tailwindcss.com"></script>
 				<SessionWrapper>
 					<Navbar />
 					{children}
