@@ -21,10 +21,6 @@ const HomePage = () => {
     (p) =>
       !["none"].includes(p.tag) && !["None"].includes(p.tag) && p.tag.length > 0
   );
-
-  // Filter products for New Arrivals (only New Arrival tag)
-  const newArrivals = products.filter((p) => p.tag === "Mens Wear").slice(0, 4);
-
   // Animation variants for sections
   const sectionVariants = {
     hidden: { opacity: 0, y: 50 },
@@ -37,7 +33,7 @@ const HomePage = () => {
 
   return (
     <>
-    <ToastContainer />
+      <ToastContainer />
       {/* Hero Section */}
       <motion.section
         className="hero"
@@ -158,6 +154,7 @@ const HomePage = () => {
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
+                  className="product-motion-wrapper"
                   transition={{ duration: 0.3 }}
                 >
                   <ProductCard product={product} />
@@ -169,66 +166,44 @@ const HomePage = () => {
       </motion.section>
 
       {/* New Arrivals Section */}
-      <motion.section
-        className="products"
-        initial="hidden"
-        animate="visible"
-        variants={sectionVariants}
-      >
-        <div className="container">
-          <h2 className="section-title">Mens Wear</h2>
-          <div className="product-grid">
-            <AnimatePresence>
-              {newArrivals.map((product) => (
-                <motion.div
-                  key={product._id}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <Link
-                    href={`/user/item/details/${product._id}`}
-                    className="product-card"
-                  >
-                    <div className="product-image">
-                      <Image
-                        src={product.images.main[0]}
-                        alt={product.title}
-                        width={250}
-                        height={300}
-                        className="product-image"
-                      />
-                      <div
-                        className={`product-badge ${
-                          product.shiningEffect ? "shine" : ""
-                        }`}
-                      >
-                        {product.tag}
-                      </div>
-                    </div>
-                    <div className="product-info">
-                      <p className="product-brand">TFW</p>
-                      <h3 className="product-title">{product.title}</h3>
-                      <div className="product-price">
-                        <span className="price-current">
-                          &#8377;{product.currentPrice}
-                        </span>
-                        <span className="price-original">
-                          &#8377;{product.oldPrice}
-                        </span>
-                      </div>
-                      <button className="add-to-cart">
-                        <span>Add to Cart</span>
-                      </button>
-                    </div>
-                  </Link>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
-        </div>
-      </motion.section>
+      {categories.map(
+        (cat) =>
+          !cat.hidden && (
+            <motion.section
+              className="products"
+              initial="hidden"
+              animate="visible"
+              key={cat._id}
+              variants={sectionVariants}
+            >
+              <div className="container">
+                <h2 className="section-title">{cat.name}</h2>
+                <div className="product-grid">
+                  <AnimatePresence>
+                    {products
+                      .filter((product) =>
+                        product.categoryData.some(
+                          (catData) => catData.categoryName === cat.name
+                        )
+                      )
+                      .map((product) => (
+                        <motion.div
+                          key={product._id}
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.95 }}
+                          className="product-motion-wrapper"
+                          transition={{ duration: 0.3 }}
+                        >
+                          <ProductCard product={product} />
+                        </motion.div>
+                      ))}
+                  </AnimatePresence>
+                </div>
+              </div>
+            </motion.section>
+          )
+      )}
     </>
   );
 };

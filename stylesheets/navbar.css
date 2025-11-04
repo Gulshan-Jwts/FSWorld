@@ -20,9 +20,11 @@
 }
 
 .logo img {
-  height: 80px;
+  height: 50px;
   width: auto;
   display: block;
+  border-radius: 10px;
+  border: 2px solid var(--accent-gold);
 }
 
 .navLinks {

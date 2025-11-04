@@ -98,6 +98,10 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .section-title {
@@ -187,10 +191,18 @@
 }
 
 .product-grid {
+  width: 80vw;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 0.25rem;
-  margin-top: 2rem;
+  gap: 1rem;
+  align-content: center;
+  justify-items: center;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.product-motion-wrapper{
+  display: flex;
+  align-self: center;
+  justify-content: center;
 }
 
 .product-card {
@@ -602,11 +614,6 @@
 
   .category-card {
     flex: 0 0 33.33%;
-  }
-
-  .product-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.5rem;
   }
 
   .product-card {

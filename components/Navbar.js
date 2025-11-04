@@ -44,7 +44,7 @@ const Navbar = () => {
         <Link href="/" className="logo">
           <Image
             width={150}
-            height={80}
+            height={50}
             src="/images/logo.png"
             alt="TFW Logo"
           />

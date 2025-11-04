@@ -1,4 +1,5 @@
 .user-product-card {
+  width: 300px;
   background: var(--bg-card);
   border-radius: 12px;
   overflow: hidden;
@@ -9,6 +10,7 @@
   flex-direction: column;
   text-decoration: none;
   color: inherit;
+  border: 1px solid var(--accent-gold);
   margin: 10px;
 }
 

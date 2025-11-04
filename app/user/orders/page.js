@@ -22,37 +22,36 @@ const YourOrdersScreen = () => {
     }
   }, [status, router, session]);
 
-  const fetchOrders = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch("/api/user/order/getAll", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "x-user-email": dbUser?.email || "",
-        },
-      });
-
-      const data = await response.json();
-      if (!response.ok || !data.success) {
-        throw new Error(data.error || "Failed to fetch orders");
-      }
-
-      setOrders(data.orders);
-    } catch (error) {
-      console.error("Error fetching orders:", error);
-      toast.error(error.message || "Could not fetch orders. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    if (dbUser) {
+    if (!dbUser) return;
 
-      fetchOrders();
-    }
-  },[dbUser]);
+    const fetchOrders = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch("/api/user/order/getAll", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "x-user-email": dbUser?.email || "",
+          },
+        });
+
+        const data = await response.json();
+        if (!response.ok || !data.success) {
+          throw new Error(data.error || "Failed to fetch orders");
+        }
+
+        setOrders(data.orders);
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+        toast.error(error.message || "Could not fetch orders. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, [dbUser]);
 
   const getProductImage = (productId, color) => {
     const product = products.find((p) => p._id === productId);

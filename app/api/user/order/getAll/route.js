@@ -18,6 +18,8 @@ export async function GET(req) {
       .populate("items.product")
       .sort({ createdAt: -1 })
 
+      console.log("mai res de raha hu",orders,user._id)
+
     return NextResponse.json({
       success: true,
       count: orders.length,

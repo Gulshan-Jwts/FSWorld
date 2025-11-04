@@ -21,6 +21,7 @@
     "bcrypt": "^6.0.0",
     "expo-linear-gradient": "^14.1.5",
     "framer-motion": "^12.23.6",
+    "fuse.js": "^7.1.0",
     "google-auth-library": "^10.2.0",
     "jose": "^6.0.12",
     "jsonwebtoken": "^9.0.2",
