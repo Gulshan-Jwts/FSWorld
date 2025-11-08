@@ -144,24 +144,22 @@ const HomePage = () => {
         animate="visible"
         variants={sectionVariants}
       >
-        <div className="container">
-          <h2 className="section-title">Featured Clothing</h2>
-          <div className="product-grid">
-            <AnimatePresence>
-              {featuredProducts.map((product) => (
-                <motion.div
-                  key={product._id}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  className="product-motion-wrapper"
-                  transition={{ duration: 0.3 }}
-                >
-                  <ProductCard product={product} />
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
+        <h2 className="section-title">Featured Clothing</h2>
+        <div className="product-grid">
+          <AnimatePresence>
+            {featuredProducts.map((product) => (
+              <motion.div
+                key={product._id}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="product-motion-wrapper"
+                transition={{ duration: 0.3 }}
+              >
+                <ProductCard product={product} />
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
       </motion.section>
 
@@ -176,30 +174,28 @@ const HomePage = () => {
               key={cat._id}
               variants={sectionVariants}
             >
-              <div className="container">
-                <h2 className="section-title">{cat.name}</h2>
-                <div className="product-grid">
-                  <AnimatePresence>
-                    {products
-                      .filter((product) =>
-                        product.categoryData.some(
-                          (catData) => catData.categoryName === cat.name
-                        )
+              <h2 className="section-title">{cat.name}</h2>
+              <div className="product-grid">
+                <AnimatePresence>
+                  {products
+                    .filter((product) =>
+                      product.categoryData.some(
+                        (catData) => catData.categoryName === cat.name
                       )
-                      .map((product) => (
-                        <motion.div
-                          key={product._id}
-                          initial={{ opacity: 0, scale: 0.95 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.95 }}
-                          className="product-motion-wrapper"
-                          transition={{ duration: 0.3 }}
-                        >
-                          <ProductCard product={product} />
-                        </motion.div>
-                      ))}
-                  </AnimatePresence>
-                </div>
+                    )
+                    .map((product) => (
+                      <motion.div
+                        key={product._id}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        className="product-motion-wrapper"
+                        transition={{ duration: 0.3 }}
+                      >
+                        <ProductCard product={product} />
+                      </motion.div>
+                    ))}
+                </AnimatePresence>
               </div>
             </motion.section>
           )

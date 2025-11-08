@@ -100,7 +100,6 @@ const ProductCard = ({
         </div>
       </Link>
       <div className="product-info">
-        <p className="product-brand">TFW</p>
         <h3 className="product-title">{product.title}</h3>
         <div className="product-price">
           <span className="price-current">&#8377;{product.currentPrice}</span>

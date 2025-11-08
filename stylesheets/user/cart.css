@@ -1,39 +1,3 @@
-:root {
-  --primary-dark: #1a1a1a;
-  --primary-light: #ffffff;
-  --accent-cyan: #73d5e8;
-  --accent-gold: #fbc886;
-  --accent-purple: #6b46c1;
-  --success-green: #22c55e;
-  --danger-red: #ef4444;
-  --text-primary: #111827;
-  --text-secondary: #6b7280;
-  --bg-light: #f8fafc;
-  --bg-card: #ffffff;
-  --bg-success-light: #f0fdf4;
-  --border-light: #e5e7eb;
-  --shadow-soft: 0 2px 4px rgba(0, 0, 0, 0.05);
-  --shadow-medium: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --font-numeric: "Roboto", sans-serif;
-}
-
-body {
-  font-family: "Poppins", sans-serif;
-  background-color: var(--bg-light);
-  color: var(--text-primary);
-  line-height: 1.6;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-h1,
-h2,
-h3,
-.btn-primary {
-  font-family: "Cinzel", serif;
-}
-
 .item-price,
 .original-price,
 .quantity-input,

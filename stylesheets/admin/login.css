@@ -27,7 +27,7 @@
 }
 
 .admin-login-header h1 {
-  font-size: 2rem;
+  font-size: 2rem !important;
   font-weight: 700;
   color: #1a202c;
   margin-bottom: 10px;

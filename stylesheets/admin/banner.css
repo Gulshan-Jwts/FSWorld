@@ -10,7 +10,7 @@
 
 /* Title */
 .banner-title {
-  font-size: 2rem;
+  font-size: 2rem !important;
   font-weight: 700;
   color: var(--primary-dark);
   margin-bottom: 1.5rem;
@@ -102,7 +102,7 @@
 }
 
 .banner-info h2 {
-  font-size: 1.1rem;
+  font-size: 1.1rem !important;
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 0.25rem;

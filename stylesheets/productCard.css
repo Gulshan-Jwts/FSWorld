@@ -1,17 +1,15 @@
 .user-product-card {
-  width: 300px;
+  border: 1px solid var(--accent-gold);
   background: var(--bg-card);
   border-radius: 12px;
   overflow: hidden;
   box-shadow: var(--shadow-soft);
   transition: all 0.3s ease;
-  height: 460px;
   display: flex;
   flex-direction: column;
   text-decoration: none;
   color: inherit;
-  border: 1px solid var(--accent-gold);
-  margin: 10px;
+  height: 370px;
 }
 
 .user-product-card:hover {
@@ -21,7 +19,7 @@
 
 .user-product-card .product-image {
   position: relative;
-  height: 280px;
+  height: 200px;
   overflow: hidden;
 }
 
@@ -54,29 +52,68 @@
 }
 
 .user-product-card .product-badge.shine {
+  /* position: relative; */
+  top: 0.75rem;
+  left: 0.75rem;
   background: linear-gradient(
-    45deg,
-    var(--accent-gold) 0%,
-    #2ec1e6 30%,
-    var(--accent-cyan) 50%,
-     #752ee6 70%,
-    var(--accent-gold) 100%
+    135deg,
+    #a47e1b 0%,
+    #ffcc33 25%,
+    #d1cfff 25%,
+    #fff4b0 50%,
+    #c1f0f6 50%,
+    #ffd1dc 0%,
+    #ffcc33 75%,
+    #a47e1b 100%
   );
-  background-size: 300% 300%;
-  animation: shine 3s ease-in-out infinite;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  background-size: 200% 200%;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  color: #1C274C;
+  font-family: var(--font-exo), sans-serif;
+  animation: shineMove 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  overflow: hidden;
 }
 
-@keyframes shine {
+/* Add a moving reflective streak */
+.user-product-card .product-badge.shine::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.6) 50%,
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+  animation: shineFlash 3s ease-in-out infinite;
+}
+
+@keyframes shineMove {
   0% {
     background-position: 0% 50%;
   }
   50% {
-    background-position: 200% 50%;
+    background-position: 100% 50%;
   }
   100% {
     background-position: 0% 50%;
+  }
+}
+
+@keyframes shineFlash {
+  0% {
+    left: -75%;
+  }
+  50% {
+    left: 125%;
+  }
+  100% {
+    left: 125%;
   }
 }
 
@@ -88,21 +125,16 @@
   justify-content: space-between;
 }
 
-.user-product-card .product-brand {
-  font-size: 0.85rem;
-  color: var(--text-light);
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-}
-
 .user-product-card .product-title {
-  font-size: 1rem;
+  font-size: 1rem !important;
   font-weight: 600;
   margin-bottom: 0.5rem;
   color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: unset;
+  min-height: 50px;
+  max-height: 50px;
 }
 
 .user-product-card .product-price {
@@ -188,5 +220,25 @@
   100% {
     left: calc(100% - 30px);
     opacity: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .user-product-card {
+    height: 390px;
+  }
+  .product-image {
+    height: 180px;
+  }
+}
+
+@media (max-width: 480px) {
+  .user-product-card {
+    height: 380px;
+    margin: 0;
+  }
+
+  .product-image {
+    height: 160px;
   }
 }

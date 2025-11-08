@@ -194,7 +194,7 @@ const CartScreen = () => {
             {dbUser?.cart.length === 0 ? (
               <div className="empty-cart">
                 <h3>Your cart is empty</h3>
-                <Link href="/shop" className="shop-now-btn">
+                <Link href="/" className="shop-now-btn">
                   Shop Now
                 </Link>
               </div>
@@ -330,7 +330,7 @@ const CartScreen = () => {
               <Link href="/checkout" className="btn-primary">
                 Proceed to Checkout
               </Link>
-              <Link href="/shop" className="continue-shopping">
+              <Link href="/" className="continue-shopping">
                 ← Continue Shopping
               </Link>
             </aside>

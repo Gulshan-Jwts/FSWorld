@@ -286,7 +286,7 @@ main.adminDashboard .action-btn.delete:hover {
   }
 
   main.adminDashboard .dashboard-header h1 {
-    font-size: 1.9rem;
+    font-size: 1.9rem !important;
   }
 
   main.adminDashboard .overview-grid {
@@ -325,7 +325,7 @@ main.adminDashboard .action-btn.delete:hover {
   }
 
   main.adminDashboard .dashboard-header h1 {
-    font-size: 1.7rem;
+    font-size: 1.7rem !important;
   }
 
   main.adminDashboard .user-profile img {

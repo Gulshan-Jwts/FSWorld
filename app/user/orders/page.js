@@ -299,7 +299,7 @@ const YourOrdersScreen = () => {
                 </defs>
               </svg>
               <h3 className="empty-orders-title">No orders yet</h3>
-              <Link href="/shop" className="shop-now-btn">
+              <Link href="/" className="shop-now-btn">
                 Shop Now
               </Link>
             </div>

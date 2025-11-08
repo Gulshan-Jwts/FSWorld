@@ -24,12 +24,27 @@
   box-sizing: border-box;
 }
 
-
 body {
   font-family: "Poppins", -apple-system, BlinkMacSystemFont, sans-serif;
   background-color: var(--bg-light);
   color: var(--text-primary);
   line-height: 1.6;
+}
+
+h1 {
+  font-size: 2.25rem !important; /* same as text-4xl */
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: 1.5rem !important; /* same as text-2xl */
+  font-weight: 600;
+}
+
+h3 {
+  font-size: 1.25rem !important; /* same as text-xl */
+  font-weight: 500;
 }
 
 h1,
@@ -47,7 +62,6 @@ h3,
   font-family: "Playfair Display", serif;
 }
 
-
 .swiper-button-next,
 .swiper-button-prev {
   min-height: 50px;
@@ -57,9 +71,8 @@ h3,
   transition: all 0.3s ease;
 }
 
-
 .swiper-button-next:hover,
-.swiper-button-prev:hover{
+.swiper-button-prev:hover {
   background-color: #cfd6e2d8;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
@@ -70,7 +83,12 @@ h3,
   font-size: 1.5rem !important;
 }
 
-
 .swiper-pagination-bullet-active {
   background-color: #73d5e8 !important;
+}
+
+.container {
+  max-width: 1400px !important;
+  margin: 0 auto;
+  padding: 0 2rem;
 }

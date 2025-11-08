@@ -17,7 +17,7 @@ main.adminAddItem .add-product-header {
 }
 
 main.adminAddItem .add-product-header h1 {
-  font-size: 2.5rem;
+  font-size: 2.5rem !important;
   font-weight: 700;
   color: var(--text-primary);
 }
@@ -48,7 +48,7 @@ main.adminAddItem .form-section {
 }
 
 main.adminAddItem .form-section h2 {
-  font-size: 1.8rem;
+  font-size: 1.8rem !important;
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 1rem;
@@ -109,7 +109,7 @@ main.adminAddItem .title-input {
   padding: 0.75rem;
   border: 1px solid var(--border-light);
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 1rem !important;
   color: var(--text-primary);
   background: var(--bg-card);
   transition: all 0.3s ease;
@@ -877,11 +877,11 @@ main.adminAddItem .submit-btn:hover {
   }
 
   main.adminAddItem .add-product-header h1 {
-    font-size: 1.9rem;
+    font-size: 1.9rem !important;
   }
 
   main.adminAddItem .form-section h2 {
-    font-size: 1.6rem;
+    font-size: 1.6rem !important;
   }
 
   main.adminAddItem .image-gallery,
@@ -936,7 +936,7 @@ main.adminAddItem .submit-btn:hover {
   }
 
   main.adminAddItem .add-product-header h1 {
-    font-size: 1.7rem;
+    font-size: 1.7rem !important;
   }
 
   main.adminAddItem .user-profile img {
@@ -949,7 +949,7 @@ main.adminAddItem .submit-btn:hover {
   }
 
   main.adminAddItem .form-section h2 {
-    font-size: 1.4rem;
+    font-size: 1.4rem !important;
   }
 
   main.adminAddItem .image-box,

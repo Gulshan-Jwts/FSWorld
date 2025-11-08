@@ -100,3 +100,25 @@
   height: 26px;
   color: var(--text-primary);
 }
+
+@media (max-width: 480px) {
+  .nav-container {
+    padding: 0 1rem;
+  }
+  .nav-actions {
+    gap: 0.5rem;
+  }
+
+  .hamburger {
+    display: block;
+  }
+  .nav-actions input {
+    display: none;
+  }
+  .nav-actions .icon-btn:nth-child(1) {
+    display: none;
+  }
+  .hidden-search {
+    display: block !important;
+  }
+}
