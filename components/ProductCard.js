@@ -71,7 +71,7 @@ const ProductCard = ({
       reload("dbUser");
     } catch (err) {
       console.error("Cart request error:", err);
-      toast.show("Something went wrong", {
+      toast.error("Something went wrong", {
         position: "top-right",
         autoClose: 3000,
       });

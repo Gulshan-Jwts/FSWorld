@@ -374,7 +374,14 @@ const Page = () => {
                 Add to Cart
               </button>
             )}
-            <button className="buy-now" data-action="buy-now">
+<Link href={{ pathname: "/user/item/order",
+                          query: { productId,
+
+ color:currentVariant,
+size:selectedSize,quantity
+  },
+                        }}>
+            <button className="buy-now" data-action="buy-now" >
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
@@ -385,6 +392,7 @@ const Page = () => {
               </svg>
               Buy Now
             </button>
+</Link>
             <button className="share-btn" data-share="toggle">
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path

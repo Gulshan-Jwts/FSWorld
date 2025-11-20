@@ -31,11 +31,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={exo.variable}>
       <head>
-        <Script
-          id="tailwind"
-          src="https://cdn.tailwindcss.com"
-          strategy="beforeInteractive"
-        />
+        <Script src="https://checkout.razorpay.com/v1/checkout.js" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}

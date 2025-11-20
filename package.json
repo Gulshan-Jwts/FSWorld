@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@remixicon/react": "^4.6.0",
+    "@tailwindcss/postcss": "^4.1.17",
     "@tiptap/extension-table": "^3.0.7",
     "@tiptap/extension-table-cell": "^3.0.7",
     "@tiptap/extension-table-header": "^3.0.7",
@@ -29,12 +30,14 @@
     "motion": "^12.23.6",
     "next": "15.3.5",
     "next-auth": "^4.24.11",
+    "postcss": "^8.5.6",
     "razorpay": "^2.9.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.60.0",
     "react-toastify": "^11.0.5",
-    "swiper": "^11.2.10"
+    "swiper": "^11.2.10",
+    "tailwindcss": "^4.1.17"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

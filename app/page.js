@@ -113,7 +113,7 @@ const HomePage = () => {
       >
         <section className="categories">
           <div className="container">
-            <h2 className="section-title">Browse Categories</h2>
+            <h1 className="section-title">Browse Categories</h1>
             <div className="categories-slider">
               {categories.map(
                 (cat) =>
@@ -144,7 +144,7 @@ const HomePage = () => {
         animate="visible"
         variants={sectionVariants}
       >
-        <h2 className="section-title">Featured Clothing</h2>
+        <h1 className="section-title">Featured Clothing</h1>
         <div className="product-grid">
           <AnimatePresence>
             {featuredProducts.map((product) => (
@@ -174,7 +174,7 @@ const HomePage = () => {
               key={cat._id}
               variants={sectionVariants}
             >
-              <h2 className="section-title">{cat.name}</h2>
+              <h1 className="section-title">{cat.name}</h1>
               <div className="product-grid">
                 <AnimatePresence>
                   {products

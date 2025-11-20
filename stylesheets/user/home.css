@@ -199,13 +199,6 @@
   padding: 0 1rem;
 }
 
-/* .product-motion-wrapper {
-  width: 100%;
-  border-radius: 12px;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  margin: 10px;
-} */
 
 .product-card {
   background: var(--bg-card);

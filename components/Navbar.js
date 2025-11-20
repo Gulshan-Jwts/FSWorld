@@ -75,7 +75,7 @@ const Navbar = () => {
               variants={menuVariants}
             >
               <li>
-                <Link href="/" className="active">
+                <Link href="/">
                   Home
                 </Link>
               </li>
@@ -84,9 +84,10 @@ const Navbar = () => {
                   index < 4 && (
                     <li key={category._id}>
                       <Link
-                        href={`/item/${category.name
-                          .toLowerCase()
-                          .replace(" ", "-")}`}
+                        href={{
+                          pathname: "/user/subcategory",
+                          query: { category: category.name, subcategory: category.subcategories[0].name },
+                        }}
                       >
                         {category.name}
                       </Link>
@@ -143,10 +144,13 @@ const Navbar = () => {
                   placeholder="Try for Sun glasses..."
                   required=""
                   type="email"
-                   readOnly
+                  readOnly
                 />
               </Link>
-              <Link href="/user/search" className="icon-btn hidden hidden-search">
+              <Link
+                href="/user/search"
+                className="icon-btn hidden hidden-search"
+              >
                 <svg
                   fill="none"
                   stroke="#1C274C"

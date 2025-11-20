@@ -80,51 +80,62 @@ const CartScreen = () => {
   }, [dbUser?.cart]);
 
   // Handle quantity change with backend sync
-  const handleQuantityChange = async (cartItem, delta) => {
-    const key = `${cartItem.productId}-${cartItem.size}-${cartItem.color}`;
-    const newQuantity = Math.max(1, (quantities[key] || 1) + delta);
+const handleQuantityChange = async (cartItem, delta) => {
+  const key = `${cartItem.productId}-${cartItem.size}-${cartItem.color}`;
+  const currentQuantity = quantities[key] || 1;
+  const newQuantity = Math.max(1, currentQuantity + delta);
 
-    try {
-      const response = await fetch(
-        "http://localhost:3000/api/user/cart/updateQty",
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "x-user-email": dbUser?.email || "",
-          },
-          body: JSON.stringify({
-            productId: cartItem.productId,
-            size: cartItem.size,
-            color: cartItem.color,
-            quantity: newQuantity,
-          }),
-        }
-      );
+  // ✅ 1. UI me pehle update kar do
+  setQuantities((prev) => ({
+    ...prev,
+    [key]: newQuantity,
+  }));
 
-      const data = await response.json();
-      if (!response.ok || !data.success) {
-        throw new Error(data.error || "Failed to update cart quantity");
+  try {
+    // ✅ 2. Server ko background me request bhejo
+    const response = await fetch(
+      "/api/user/cart/updateQty",
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "x-user-email": dbUser?.email || "",
+        },
+        body: JSON.stringify({
+          productId: cartItem.productId,
+          size: cartItem.size,
+          color: cartItem.color,
+          quantity: newQuantity,
+        }),
       }
+    );
 
-      setQuantities((prev) => ({
-        ...prev,
-        [key]: newQuantity,
-      }));
-    } catch (error) {
-      console.error("Error updating quantity:", error);
-      toast.error(
-        error.message || "Could not update quantity. Please try again."
-      );
+    const data = await response.json();
+
+    // ❌ 3. Agar server error de, to rollback kar do
+    if (!response.ok || !data.success) {
+      throw new Error(data.error || "Failed to update cart quantity");
     }
-  };
+
+  } catch (error) {
+    console.error("Error updating quantity:", error);
+    toast.error("Failed to update quantity. Rolling back...");
+    
+    // 🔁 Rollback UI
+    setQuantities((prev) => ({
+      ...prev,
+      [key]: currentQuantity,
+    }));
+  }
+};
+
 
   // Handle item removal with backend sync
   const handleRemoveItem = async (cartItem) => {
     const key = `${cartItem.productId}-${cartItem.size}-${cartItem.color}`;
     try {
       const response = await fetch(
-        "http://localhost:3000/api/user/cart/remove",
+        "/api/user/cart/remove",
         {
           method: "POST",
           headers: {

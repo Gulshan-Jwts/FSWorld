@@ -37,7 +37,7 @@
   background: var(--bg-light);
 }
 
-.gallery-slide{
+.gallery-slide {
   width: 100%;
   height: 100%;
   display: flex;
@@ -104,7 +104,7 @@
   opacity: 1;
 }
 
-.play-icon-overlay-large{
+.play-icon-overlay-large {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -153,7 +153,7 @@
 }
 
 .product-container .product-title {
-  font-size: 2rem !important; 
+  font-size: 2rem !important;
   white-space: break-spaces;
   font-weight: 700;
   font-family: var(--font-exo), sans-serif;
@@ -401,15 +401,28 @@
   height: 20px;
 }
 
+.product-description h1 {
+  margin: 2rem 0 1.5rem;
+  font-size: 1.8rem !important;
+  font-weight: 700;
+  text-decoration: underline solid var(--accent-cyan) 4px;
+
+  font-family: var(--font-exo), sans-serif;
+}
+
 /* Product Description & Details */
 .product-description h1,
 .dynamic-desc h1 {
-  font-size: 1.8rem !important;
-  font-weight: 700;
+  margin: 1.5rem 0 0.75rem;
   text-align: center;
-  margin: 2rem 0 1.5rem;
-  text-decoration: underline solid var(--accent-cyan) 4px;
-  font-family: var(--font-exo), sans-serif;
+}
+
+.dynamic-desc h1 {
+  font-size: 1.65rem !important;
+  font-weight: 700;
+  text-decoration: none;
+  text-align: left;
+  font-family: "Poppins", -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 .dynamic-desc h2 {
