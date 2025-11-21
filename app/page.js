@@ -34,7 +34,6 @@ const HomePage = () => {
   return (
     <>
       <ToastContainer />
-      {/* Hero Section */}
       <motion.section
         className="hero"
         initial="hidden"
@@ -67,7 +66,6 @@ const HomePage = () => {
         </div>
       </motion.section>
 
-      {/* Banner Section */}
       <motion.section
         className="banner"
         initial="hidden"
@@ -104,7 +102,6 @@ const HomePage = () => {
         </div>
       </motion.section>
 
-      {/* Categories Section with Swiper.js */}
       <motion.section
         className="categories"
         initial="hidden"
@@ -136,7 +133,6 @@ const HomePage = () => {
         </section>
       </motion.section>
 
-      {/* Products Section */}
       <motion.section
         className="products"
         id="products"
@@ -163,7 +159,6 @@ const HomePage = () => {
         </div>
       </motion.section>
 
-      {/* New Arrivals Section */}
       {categories.map(
         (cat) =>
           !cat.hidden && (

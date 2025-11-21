@@ -1,14 +1,15 @@
 "use client";
 import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 import { useEffect } from "react";
 
-const Page = ({ params }) => {
+const Page = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const { url } = React.use(params) || {};
+  const searchParams = useSearchParams();
+  const url = searchParams.get("redirect");
 
   useEffect(() => {
     if (status === "authenticated" && session) {
@@ -36,7 +37,10 @@ const Page = ({ params }) => {
               <h1 className="text-2xl xl:text-3xl font-extrabold">Sign up</h1>
               <div className="w-full flex-1 mt-8">
                 <div className="flex flex-col items-center">
-                  <button  onClick={() => signIn("github")} className="w-full cursor-pointer max-w-xs font-bold shadow-sm rounded-lg py-3 bg-indigo-100 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out hover:shadow focus:shadow-sm focus:outline-none">
+                  <button
+                    onClick={() => signIn("github")}
+                    className="w-full cursor-pointer max-w-xs font-bold shadow-sm rounded-lg py-3 bg-indigo-100 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out hover:shadow focus:shadow-sm focus:outline-none"
+                  >
                     <div className="bg-white p-2 rounded-full">
                       <svg className="w-4" viewBox="0 0 533.5 544.3">
                         <path
@@ -72,7 +76,6 @@ const Page = ({ params }) => {
                     <span className="ml-4">Sign Up with GitHub</span>
                   </button>
                 </div>
-
               </div>
             </div>
           </div>

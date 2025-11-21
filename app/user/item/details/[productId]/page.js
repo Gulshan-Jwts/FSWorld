@@ -1,5 +1,5 @@
 "use client";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import React, { useState, useRef } from "react";
@@ -12,12 +12,13 @@ import "swiper/css/pagination";
 import "@/stylesheets/user/detail-page.css";
 import { useData } from "@/components/DataContext";
 import ProductCard from "@/components/ProductCard";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { toast } from "react-toastify";
 
 const Page = () => {
   const { productId } = useParams();
-  const searchParams = useSearchParams();
-  const affilatorId = searchParams.get("affilator");
-  const { products } = useData();
+  const { dbUser, products, reload } = useData();
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -56,6 +57,81 @@ const Page = () => {
         handlePlayPause(index); // update isPlaying state
       }
     });
+  };
+
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  const addToCart = async (productId, color, size) => {
+    if (!session && status !== "loading") {
+      router.push(
+        `/user/login/?redirect=${encodeURIComponent(
+          `/user/item/details/${productId}`
+        )}`
+      );
+      toast.info("Please log in to add items to your cart", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      return;
+    }
+    if (!color || !size) {
+      toast.error("Please select color and size", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      return;
+    }
+    toast.success("Adding item to cart...", {
+      position: "top-right",
+      autoClose: 2000,
+    });
+    const alreadyInCart = dbUser?.cart?.some(
+      (item) =>
+        item.productId === productId &&
+        item.size === size &&
+        item.color === color
+    );
+    try {
+      let res;
+      if (alreadyInCart) {
+        res = await fetch(`/api/user/cart/updateQty`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ productId, size, color }),
+        });
+      } else {
+        res = await fetch(`/api/user/cart/add`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ productId, size, color }),
+        });
+      }
+
+      console.log(res, "Cart response");
+
+      const data = await res.json();
+      console.log(data, "respnonsj");
+
+      if (!res.ok) {
+        toast.error("Failed to update cart", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+        console.log("Cart error:", data);
+      }
+      reload("dbUser");
+    } catch (err) {
+      console.error("Cart request error:", err);
+      toast.error("Something went wrong", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    }
   };
 
   const productCategoryIds =
@@ -361,8 +437,13 @@ const Page = () => {
 
           {/* Action Buttons */}
           <div className="action-buttons">
-            {!affilatorId && (
-              <button className="add-to-cart" data-action="add-to-cart">
+              <button
+                className="add-to-cart"
+                onClick={() =>
+                  addToCart(productId, currentVariant, selectedSize)
+                }
+                data-action="add-to-cart"
+              >
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
@@ -373,27 +454,47 @@ const Page = () => {
                 </svg>
                 Add to Cart
               </button>
-            )}
-<Link href={{ pathname: "/user/item/order",
-                          query: { productId,
-
- color:currentVariant,
-size:selectedSize,quantity
-  },
-                        }}>
-            <button className="buy-now" data-action="buy-now" >
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M13 10V3L4 14h7v7l9-11h-7z"
-                />
-              </svg>
-              Buy Now
-            </button>
-</Link>
-            <button className="share-btn" data-share="toggle">
+            <Link
+              href={{
+                pathname: "/user/item/order",
+                query: {
+                  productId,
+                  color: currentVariant,
+                  size: selectedSize,
+                  quantity,
+                },
+              }}
+            >
+              <button className="buy-now" data-action="buy-now">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                  />
+                </svg>
+                Buy Now
+              </button>
+            </Link>
+            <button
+              className="share-btn"
+              onClick={() => {
+                if (navigator.share) {
+                  navigator.share({
+                    title: "FsWorld Product",
+                    text: "Check this out!",
+                    url: window.location.href,
+                  });
+                } else {
+                  toast.error("Please select color and size", {
+                    position: "top-right",
+                    autoClose: 3000,
+                  });
+                }
+              }}
+              data-share="toggle"
+            >
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"

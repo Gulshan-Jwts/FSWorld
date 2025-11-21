@@ -68,16 +68,14 @@ const Navbar = () => {
         <AnimatePresence>
           {isMenuOpen && (
             <motion.ul
-              className="navLinks flex flex-col px-5 md:w-auto absolute top-16 left-0 w-full bg-white md:bg-transparent p-4 md:flex md:flex-row md:static md:p-0"
+              className="navLinks flex flex-col px-5 md:w-auto bg-white absolute top-16 left-0 w-full md:bg-transparent p-4 md:flex md:flex-row md:static md:p-0"
               initial="closed"
               animate="open"
               exit="closed"
               variants={menuVariants}
             >
               <li>
-                <Link href="/">
-                  Home
-                </Link>
+                <Link href="/">Home</Link>
               </li>
               {categories?.map((category, index) => {
                 return (
@@ -86,7 +84,10 @@ const Navbar = () => {
                       <Link
                         href={{
                           pathname: "/user/subcategory",
-                          query: { category: category.name, subcategory: category.subcategories[0].name },
+                          query: {
+                            category: category.name,
+                            subcategory: category.subcategories[0].name,
+                          },
                         }}
                       >
                         {category.name}
@@ -103,7 +104,10 @@ const Navbar = () => {
           {status === "loading" ? (
             <p>Loading...</p>
           ) : !session ? (
-            <Link href="/user/login/home" className="icon-btn">
+            <Link
+              href={`/user/login?redirect=${encodeURIComponent("/")}`}
+              className="icon-btn"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 height="24px"

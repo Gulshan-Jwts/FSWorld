@@ -1,10 +1,10 @@
 import { Suspense } from "react";
-import PlaceOrderPage from "./PlaceOrderPage";
+import LoginClient from "./LoginClient";
 
 export default function Page() {
   return (
     <Suspense fallback={<div>Loading order...</div>}>
-      <PlaceOrderPage />
+      <LoginClient />
     </Suspense>
   );
 }
