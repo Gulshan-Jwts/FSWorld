@@ -285,11 +285,11 @@ const Page = () => {
           categoryData: categoryMapped,
           images,
           dimension: {
-            length: Number(productData.dimension.length),
-            breadth: Number(productData.dimension.breadth),
-            height: Number(productData.dimension.height),
+            length: Number(formData.dimension.length),
+            breadth: Number(formData.dimension.breadth),
+            height: Number(formData.dimension.height),
           },
-          weight: Number(productData.weight),
+          weight: Number(formData.weight),
         }),
       });
 
@@ -975,12 +975,12 @@ const Page = () => {
                 type="number"
                 placeholder="Length"
                 className="form-control"
-                value={productData.dimension.length}
+                value={formData.dimension.length}
                 onChange={(e) =>
-                  setProductData({
-                    ...productData,
+                  setFormData({
+                    ...formData,
                     dimension: {
-                      ...productData.dimension,
+                      ...formData.dimension,
                       length: e.target.value,
                     },
                   })
@@ -990,12 +990,12 @@ const Page = () => {
                 type="number"
                 placeholder="Breadth"
                 className="form-control"
-                value={productData.dimension.breadth}
+                value={formData.dimension.breadth}
                 onChange={(e) =>
-                  setProductData({
-                    ...productData,
+                  setFormData({
+                    ...formData,
                     dimension: {
-                      ...productData.dimension,
+                      ...formData.dimension,
                       breadth: e.target.value,
                     },
                   })
@@ -1005,12 +1005,12 @@ const Page = () => {
                 type="number"
                 placeholder="Height"
                 className="form-control"
-                value={productData.dimension.height}
+                value={formData.dimension.height}
                 onChange={(e) =>
-                  setProductData({
-                    ...productData,
+                  setFormData({
+                    ...formData,
                     dimension: {
-                      ...productData.dimension,
+                      ...formData.dimension,
                       height: e.target.value,
                     },
                   })
@@ -1025,9 +1025,9 @@ const Page = () => {
               type="number"
               placeholder="Ex: 0.350"
               className="form-control"
-              value={productData.weight}
+              value={formData.weight}
               onChange={(e) =>
-                setProductData({ ...productData, weight: e.target.value })
+                setFormData({ ...formData, weight: e.target.value })
               }
             />
           </div>
