@@ -74,11 +74,12 @@ const Page = () => {
   };
 
   const handleDeleteCategory = async (categoryName) => {
-    const confirm = window.prompt(
-      `type "${categoryName}"?`
-    );
-    
-    if (confirm.toLocaleLowerCase() !== categoryName.toLocaleLowerCase()) {toast.info("aborted deletion"); return};
+    const confirm = window.prompt(`type "${categoryName}"?`);
+
+    if (confirm.toLocaleLowerCase() !== categoryName.toLocaleLowerCase()) {
+      toast.info("aborted deletion");
+      return;
+    }
     try {
       const hasProducts = products.some((product) =>
         product.categoryData.some((i) => i.categoryName === categoryName)
@@ -109,10 +110,11 @@ const Page = () => {
   };
 
   const handleDeleteSubcategory = async (categoryName, subcategoryName) => {
-    const confirm = window.prompt(
-      `type "${subcategoryName}"?`
-    );
-    if (confirm.toLocaleLowerCase() !== subcategoryName.toLocaleLowerCase()) {toast.info("aborted deletion"); return};
+    const confirm = window.prompt(`type "${subcategoryName}"?`);
+    if (confirm.toLocaleLowerCase() !== subcategoryName.toLocaleLowerCase()) {
+      toast.info("aborted deletion");
+      return;
+    }
     try {
       const hasProducts = products.some((product) =>
         product.categoryData.some((i) => i.subcategory === subcategoryName)
@@ -199,7 +201,28 @@ const Page = () => {
     }
   };
 
-  const handleSubImageUpload = async (res, categoryName,subcategoryName) => {
+  const handleToggleCategory = async (categoryName) => {
+    
+        toast.success(`Category visibility changing...`);
+    try {
+      const response = await fetch("/api/admin/category/toggle", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ categoryName }),
+      });
+
+      if (response.ok) {
+        reload("categories");
+      } else {
+        toast.error("Failed to update category visibility");
+      }
+    } catch (error) {
+      console.error("Error toggling category:", error);
+      toast.error("Error changing category visibility");
+    }
+  };
+
+  const handleSubImageUpload = async (res, categoryName, subcategoryName) => {
     const newImageUrl = res[0]?.ufsUrl;
     try {
       const response = await fetch("/api/admin/category/subcategory/upload", {
@@ -383,9 +406,15 @@ const Page = () => {
                         <UploadButton
                           className="upload-btn"
                           endpoint="imageUploader"
-                          onUploadBegin={() => toast.info("Uploading subcategory image...")}
+                          onUploadBegin={() =>
+                            toast.info("Uploading subcategory image...")
+                          }
                           onClientUploadComplete={(res) =>
-                            handleSubImageUpload(res, category.name, subcategory.name)
+                            handleSubImageUpload(
+                              res,
+                              category.name,
+                              subcategory.name
+                            )
                           }
                           onUploadError={(error) => {
                             toast.error(`Upload failed: ${error.message}`);
@@ -415,6 +444,17 @@ const Page = () => {
                         </button>
                       </div>
                     ))}
+                    <button
+                      className={`hide-btn ${
+                        category.hidden ? "inactive" : "active"
+                      }`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleToggleCategory(category.name);
+                      }}
+                    >
+                      {category.hidden ? "Unhide" : "Hide"}
+                    </button>
                   </div>
                   <div className="product-cards">
                     {products
@@ -424,7 +464,11 @@ const Page = () => {
                         )
                       )
                       .map((product) => (
-                       <ProductCard key={product._id} product={product} showUserActions={false} />
+                        <ProductCard
+                          key={product._id}
+                          product={product}
+                          showUserActions={false}
+                        />
                       ))}
                   </div>
                 </motion.div>

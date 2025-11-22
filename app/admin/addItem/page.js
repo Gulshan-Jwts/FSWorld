@@ -60,6 +60,8 @@ const Page = () => {
         categoryId: categories[0]?._id || "",
       },
     ],
+    dimension: { length: "", breadth: "", height: "" },
+    weight: "",
     tag: ["New Arrival"],
     shiningEffect: false,
     searchable: [],
@@ -231,10 +233,10 @@ const Page = () => {
   const handleImageUpload = (color, res) => {
     setUploading((prev) => ({ ...prev, [color]: false }));
     const newImageUrl = res[0].ufsUrl;
-    console.log(res[0].type)
+    console.log(res[0].type);
     setImages((prev) => ({
       ...prev,
-      [color]: [...prev[color], {image:newImageUrl,type: res[0].type}],
+      [color]: [...prev[color], { image: newImageUrl, type: res[0].type }],
     }));
     toast.success("Image uploaded successfully!");
   };
@@ -282,6 +284,12 @@ const Page = () => {
           ...formData,
           categoryData: categoryMapped,
           images,
+          dimension: {
+            length: Number(productData.dimension.length),
+            breadth: Number(productData.dimension.breadth),
+            height: Number(productData.dimension.height),
+          },
+          weight: Number(productData.weight),
         }),
       });
 
@@ -956,6 +964,73 @@ const Page = () => {
             onChange={handlesearchableChange}
             required
           />
+        </div>
+        <div className="formsections">
+          <h3 className="section-heading">Dimensions & Weight</h3>
+
+          <div className="form-group inputBox">
+            <label className="form-label">Dimensions (cm)</label>
+            <div className="grid grid-cols-3 gap-3">
+              <input
+                type="number"
+                placeholder="Length"
+                className="form-control"
+                value={productData.dimension.length}
+                onChange={(e) =>
+                  setProductData({
+                    ...productData,
+                    dimension: {
+                      ...productData.dimension,
+                      length: e.target.value,
+                    },
+                  })
+                }
+              />
+              <input
+                type="number"
+                placeholder="Breadth"
+                className="form-control"
+                value={productData.dimension.breadth}
+                onChange={(e) =>
+                  setProductData({
+                    ...productData,
+                    dimension: {
+                      ...productData.dimension,
+                      breadth: e.target.value,
+                    },
+                  })
+                }
+              />
+              <input
+                type="number"
+                placeholder="Height"
+                className="form-control"
+                value={productData.dimension.height}
+                onChange={(e) =>
+                  setProductData({
+                    ...productData,
+                    dimension: {
+                      ...productData.dimension,
+                      height: e.target.value,
+                    },
+                  })
+                }
+              />
+            </div>
+          </div>
+
+          <div className="form-group inputBox mt-4">
+            <label className="form-label">Weight (kg)</label>
+            <input
+              type="number"
+              placeholder="Ex: 0.350"
+              className="form-control"
+              value={productData.weight}
+              onChange={(e) =>
+                setProductData({ ...productData, weight: e.target.value })
+              }
+            />
+          </div>
         </div>
         <div className="form-section">
           <h2>Shining Effect</h2>

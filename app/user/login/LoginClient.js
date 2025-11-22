@@ -13,7 +13,7 @@ const Page = () => {
 
   useEffect(() => {
     if (status === "authenticated" && session) {
-      if (url === "home") {
+      if (url === "/" || url === null) {
         router.replace(`/`);
         return;
       }
@@ -23,7 +23,7 @@ const Page = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="min-h-screen w-full bg-gray-100 text-gray-900 flex justify-center">
-        <div className="max-w-screen-xl m-0 sm:m-10 bg-white shadow sm:rounded-lg flex justify-center flex-1">
+        <div className="max-w-7-xl m-0 sm:m-10 bg-white shadow sm:rounded-lg flex flex-col sm:flex-row flex-1">
           <div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
             <div>
               <Image
@@ -31,6 +31,7 @@ const Page = () => {
                 height={100}
                 src="/images/logo.png"
                 alt="TFW Logo"
+                className="mx-auto rounded-md border-amber-600"
               />
             </div>
             <div className="mt-12 flex flex-col items-center">
@@ -39,7 +40,7 @@ const Page = () => {
                 <div className="flex flex-col items-center">
                   <button
                     onClick={() => signIn("github")}
-                    className="w-full cursor-pointer max-w-xs font-bold shadow-sm rounded-lg py-3 bg-indigo-100 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out hover:shadow focus:shadow-sm focus:outline-none"
+                    className="w-full cursor-pointer max-w-xs font-bold shadow-sm rounded-lg py-3 px-1.5 bg-indigo-100 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out hover:shadow focus:shadow-sm focus:outline-none"
                   >
                     <div className="bg-white p-2 rounded-full">
                       <svg className="w-4" viewBox="0 0 533.5 544.3">
@@ -64,7 +65,7 @@ const Page = () => {
                     <span className="ml-4">Sign Up with Google</span>
                   </button>
 
-                  <button className="w-full max-w-xs  cursor-pointer font-bold shadow-sm rounded-lg py-3 bg-indigo-100 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out hover:shadow focus:shadow-sm focus:outline-none mt-5">
+                  <button className="w-full max-w-xs px-1.5 cursor-pointer font-bold shadow-sm rounded-lg py-3 bg-indigo-100 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out hover:shadow focus:shadow-sm focus:outline-none mt-5">
                     <div className="bg-white p-1 rounded-full">
                       <svg className="w-6" viewBox="0 0 32 32">
                         <path
@@ -79,9 +80,9 @@ const Page = () => {
               </div>
             </div>
           </div>
-          <div className="flex-1 bg-indigo-100 text-center hidden lg:flex">
+          <div className="flex-1 w-[80%] mx-auto bg-indigo-100 text-center flex">
             <div
-              className="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat"
+              className="m-12 xl:m-16 bg-contain w-full bg-center bg-no-repeat"
               style={{
                 backgroundImage:
                   "url('https://storage.googleapis.com/devitary-image-host.appspot.com/15848031292911696601-undraw_designer_life_w96d.svg')",

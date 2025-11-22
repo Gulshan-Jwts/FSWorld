@@ -446,6 +446,23 @@
   }
 }
 
+.hide-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  border: none;
+}
+.hide-btn.active {
+  background: #ff5c5c;
+  color: white;
+}
+.hide-btn.inactive {
+  background: #4caf50;
+  color: white;
+}
+
+
 @media (max-width: 480px) {
   .main-content {
     padding: 1rem;

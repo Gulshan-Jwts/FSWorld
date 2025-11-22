@@ -128,7 +128,7 @@ export default function FAQPage() {
           </div>
 
           {/* Contact Footer */}
-          <div className="mt-12 text-center p-10 bg-white rounded-2xl border border-gray-200 shadow-lg">
+          <div className="mt-12 text-center p-2.5 bg-white rounded-2xl border border-gray-200 shadow-lg">
             <p className="text-lg text-gray-700">Can&apos;t find what you&apos;re looking for?</p>
             <p className="text-lg text-gray-700 mt-2">Contact our support team directly:</p>
             <p className="mt-6 text-lg">

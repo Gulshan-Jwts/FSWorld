@@ -508,7 +508,7 @@ export default function PoliciesPage() {
                     <li>Read all policies before making a purchase.</li>
                   </ul>
 
-                  <div className="pt-6 border-t border-dashed border-gray-300 text-sm text-gray-600">
+                  <div className="p-2.5 border-t border-dashed border-gray-300 text-sm text-gray-600">
                     <strong>Contact:</strong> Customer Care Number:{" "}
                     <strong>9137650662</strong> | Email:{" "}
                     <a

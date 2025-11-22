@@ -115,7 +115,7 @@
   .nav-actions input {
     display: none;
   }
-  .nav-actions .icon-btn:nth-child(1) {
+  .searchBar {
     display: none;
   }
   .hidden-search {

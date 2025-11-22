@@ -18,7 +18,7 @@ const categorySchema = new mongoose.Schema(
       },
     ],
     image: String,
-    hidden: Boolean,
+    hidden: { type: Boolean, default: false },
   },
   {
     timestamps: true,

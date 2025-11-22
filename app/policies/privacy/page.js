@@ -87,7 +87,7 @@ export default function PrivacyPolicyPage() {
                   </ul>
                 </>
               )},
-              { title: "6. Children&apos;s Privacy", content: "Our services are not intended for individuals under 13 years of age." },
+              { title: "6. Children Privacy", content: "Our services are not intended for individuals under 13 years of age." },
               { title: "7. Third-Party Links", content: "Our website/app may contain external links. We are not responsible for their content or privacy practices." },
               { title: "8. Updates to This Policy", content: "We may update this Privacy Policy from time to time. Updated versions will be posted on our website/app." },
               { title: "9. Contact Us", content: (
@@ -119,7 +119,7 @@ export default function PrivacyPolicyPage() {
           </div>
 
           {/* Contact Footer */}
-          <div className="mt-12 text-center p-10 bg-white rounded-2xl border border-gray-200 shadow-lg">
+          <div className="mt-12 text-center p-2.5 bg-white rounded-2xl border border-gray-200 shadow-lg">
             <p className="text-lg text-gray-700">Can&apos;t find what you&apos;re looking for?</p>
             <p className="text-lg text-gray-700 mt-2">Contact our support team directly:</p>
             <p className="mt-6 text-lg">

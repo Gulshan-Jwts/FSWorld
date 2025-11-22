@@ -66,6 +66,8 @@ const Page = () => {
         categoryId: categories[0]?._id || "",
       },
     ],
+    dimension: { length: "", breadth: "", height: "" },
+    weight: "",
     tag: ["New Arrival"],
     shiningEffect: false,
     searchable: [],
@@ -210,6 +212,12 @@ const Page = () => {
             subcategory: c.subcategory,
             categoryId: c.categoryId,
           })) || [],
+        dimension: {
+          length: productToEdit.dimension.length || "",
+          breadth: productToEdit.dimension.breadth || "",
+          height: productToEdit.dimension.height || "",
+        },
+        weight: productToEdit.weight || "",
         tag: productToEdit.tag?.length ? productToEdit.tag : ["New Arrival"],
         shiningEffect: productToEdit.shiningEffect || false,
         searchable: productToEdit.searchable || [],
@@ -286,10 +294,10 @@ const Page = () => {
   const handleImageUpload = (color, res) => {
     setUploading((prev) => ({ ...prev, [color]: false }));
     const newImageUrl = res[0].ufsUrl;
-    console.log(res[0])
+    console.log(res[0]);
     setImages((prev) => ({
       ...prev,
-      [color]: [...prev[color], {image:newImageUrl,type: res[0].type}],
+      [color]: [...prev[color], { image: newImageUrl, type: res[0].type }],
     }));
     toast.success("Image uploaded successfully!");
   };
@@ -322,10 +330,10 @@ const Page = () => {
       }));
 
       console.log({
-          ...formData,
-          categoryData: categoryMapped,
-          images,
-        })
+        ...formData,
+        categoryData: categoryMapped,
+        images,
+      });
 
       toast.loading("Updating product...");
 
@@ -338,6 +346,12 @@ const Page = () => {
           ...formData,
           categoryData: categoryMapped,
           images,
+          dimension: {
+            length: Number(formData.dimension.length),
+            breadth: Number(formData.dimension.breadth),
+            height: Number(formData.dimension.height),
+          },
+          weight: Number(formData.weight),
         }),
       });
 
@@ -1025,6 +1039,73 @@ const Page = () => {
             onChange={handlesearchableChange}
             required
           />
+        </div>
+        <div className="form-section">
+          <h2 className="section-heading">Dimensions & Weight</h2>
+
+          <div className="form-group color-input inputBox">
+            <label className="form-label">Dimensions (l,b,h)</label>
+            <div className="grid grid-cols-3 gap-3">
+              <input
+                type="number"
+                placeholder="Length"
+                className="folor-input"
+                value={formData.dimension.length}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    dimension: {
+                      ...formData.dimension,
+                      length: e.target.value,
+                    },
+                  })
+                }
+              />
+              <input
+                type="number"
+                placeholder="Breadth"
+                className="folor-input"
+                value={formData.dimension.breadth}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    dimension: {
+                      ...formData.dimension,
+                      breadth: e.target.value,
+                    },
+                  })
+                }
+              />
+              <input
+                type="number"
+                placeholder="Height"
+                className="form-control"
+                value={formData.dimension.height}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    dimension: {
+                      ...formData.dimension,
+                      height: e.target.value,
+                    },
+                  })
+                }
+              />
+            </div>
+          </div>
+
+          <div className="form-group color-input inputBox mt-4">
+            <label className="form-label">Weight</label>
+            <input
+              type="number"
+              placeholder="Ex: 0.350"
+              className="form-control"
+              value={formData.weight}
+              onChange={(e) =>
+                setFormData({ ...formData, weight: e.target.value })
+              }
+            />
+          </div>
         </div>
         <div className="form-section">
           <h2>Shining Effect</h2>
