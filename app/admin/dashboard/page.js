@@ -251,12 +251,15 @@ const Page = () => {
       <div className="products-section">
         <div className="products-section-header">
           <h2>Products</h2>
-          <div className="products-section-actions">
-            <Link href="/admin/addItem" className="add-product-btn mx-7">
-              Add New Product
+          <div className="products-section-actions flex gap-2">
+            <Link href="/admin/addItem" className="add-product-btn">
+              Products
             </Link>
             <Link href="/admin/manageCategory" className="add-product-btn">
-              Add Category
+              Category
+            </Link>
+            <Link href="/admin/manageBanner" className="add-product-btn">
+              Banners
             </Link>
           </div>
         </div>

@@ -23,6 +23,8 @@ const DataWrapper = ({ children }) => {
       fetchAffilators();
     } else if (key === "categories") {
       fetchCategories();
+    }else if (key === "banners") {
+      fetchBanners();
     }
   };
 

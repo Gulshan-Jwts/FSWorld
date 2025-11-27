@@ -437,46 +437,76 @@ const Page = () => {
 
           {/* Action Buttons */}
           <div className="action-buttons">
-              <button
-                className="add-to-cart"
-                onClick={() =>
-                  addToCart(productId, currentVariant, selectedSize)
+            <button
+              className="add-to-cart"
+              onClick={() => addToCart(productId, currentVariant, selectedSize)}
+              data-action="add-to-cart"
+            >
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                />
+              </svg>
+              Add to Cart
+            </button>
+            <button
+              onClick={() => {
+                console.log("Buy Now clicked");
+                toast.info("Processing Buy Now...", {
+                  position: "top-right",
+                  autoClose: 3000,
+                });
+                if (!currentVariant) {
+                  console.log("current varient not foudn");
+                  toast.error("Please select color first", {
+                    position: "top-right",
+                    autoClose: 3000,
+                  });
+                  return;
                 }
-                data-action="add-to-cart"
-              >
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-                  />
-                </svg>
-                Add to Cart
-              </button>
-            <Link
-              href={{
-                pathname: "/user/item/order",
-                query: {
+
+                if (!selectedSize) {
+                  toast.error("Please select size", {
+                    position: "top-right",
+                    autoClose: 3000,
+                  });
+                  return;
+                }
+
+                if (!quantity || quantity < 1) {
+                  toast.error("Invalid quantity", {
+                    position: "top-right",
+                    autoClose: 3000,
+                  });
+                  return;
+                }
+
+                const query = new URLSearchParams({
                   productId,
                   color: currentVariant,
                   size: selectedSize,
-                  quantity,
-                },
+                  quantity: quantity.toString(),
+                }).toString();
+
+                router.push(`/user/item/order?${query}`);
               }}
+              className="buy-now"
+              data-action="buy-now"
+              disabled={!currentVariant || !selectedSize}
             >
-              <button className="buy-now" data-action="buy-now">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M13 10V3L4 14h7v7l9-11h-7z"
-                  />
-                </svg>
-                Buy Now
-              </button>
-            </Link>
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                />
+              </svg>
+              Buy Now
+            </button>
             <button
               className="share-btn"
               onClick={() => {

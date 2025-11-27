@@ -40,7 +40,7 @@ const Navbar = () => {
 
   return (
     <header className="header">
-      <nav className="nav-container">
+      <nav className="nav-container" onBlur={()=> {setIsMenuOpen(false);}}>
         <Link href="/" className="logo">
           <Image
             width={150}
@@ -87,7 +87,6 @@ const Navbar = () => {
                           pathname: "/user/subcategory",
                           query: {
                             category: category.name,
-                            subcategory: category.subcategories[0].name,
                           },
                         }}
                       >

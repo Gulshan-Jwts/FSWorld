@@ -13,4 +13,12 @@ export const ourFileRouter = {
       type: file.type, // "image" or "video"
     };
   }),
+  bannerUploader: f({
+    image: { maxFileSize: "4MB", maxFileCount: 1 },
+  }).onUploadComplete(async ({ file }) => {
+    console.log("Uploaded file URL:", file.ufsUrl);
+    return {
+      url: file.ufsUrl,
+    };
+  }),
 };

@@ -39,7 +39,11 @@ const Page = () => {
               <div className="w-full flex-1 mt-8">
                 <div className="flex flex-col items-center">
                   <button
-                    onClick={() => signIn("github")}
+                    onClick={() =>
+                      signIn("google", {
+                        callbackUrl: url || "/",
+                      })
+                    }
                     className="w-full cursor-pointer max-w-xs font-bold shadow-sm rounded-lg py-3 px-1.5 bg-indigo-100 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out hover:shadow focus:shadow-sm focus:outline-none"
                   >
                     <div className="bg-white p-2 rounded-full">
@@ -65,7 +69,14 @@ const Page = () => {
                     <span className="ml-4">Sign Up with Google</span>
                   </button>
 
-                  <button className="w-full max-w-xs px-1.5 cursor-pointer font-bold shadow-sm rounded-lg py-3 bg-indigo-100 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out hover:shadow focus:shadow-sm focus:outline-none mt-5">
+                  <button
+                    onClick={() =>
+                      signIn("github", {
+                        callbackUrl: url || "/user/profile",
+                      })
+                    }
+                    className="w-full max-w-xs px-1.5 cursor-pointer font-bold shadow-sm rounded-lg py-3 bg-indigo-100 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out hover:shadow focus:shadow-sm focus:outline-none mt-5"
+                  >
                     <div className="bg-white p-1 rounded-full">
                       <svg className="w-6" viewBox="0 0 32 32">
                         <path

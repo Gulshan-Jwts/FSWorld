@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
-import "@/stylesheets/admin/banner.css";
 import Image from "next/image";
 import Link from "next/link";
 import { useData } from "@/components/DataContext";
+import { UploadButton } from "@uploadthing/react";
+import "@/stylesheets/admin/banner.css";
 
 export default function BannerManager() {
-  const { banners,reload } = useData();
+  const { banners, reload } = useData();
   const [bannerImage, setBannerImage] = useState("");
   const [name, setName] = useState("");
   const [link, setLink] = useState("");
@@ -65,12 +66,19 @@ export default function BannerManager() {
       <h1 className="banner-title">Manage Banners</h1>
 
       <div className="banner-form">
-        <input
-          type="text"
-          placeholder="Banner Image URL"
-          value={bannerImage}
-          onChange={(e) => setBannerImage(e.target.value)}
+        <UploadButton
+          endpoint="bannerUploader"
+          appearance={{
+            button:
+              "w-full bg-yellow-500 flex flex-col hover:bg-yellow-700 !text-white font-medium px-4 py-2 rounded-md transition-all shadow",
+            allowedContent: "text-sm text-gray-500 mt-1",
+          }}
+          onClientUploadComplete={(res) => setBannerImage(res[0].url)}
+          onUploadError={(error) => {
+            toast.error("Upload failed: " + error.message);
+          }}
         />
+
         <input
           type="text"
           placeholder="Banner Text"

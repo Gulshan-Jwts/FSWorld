@@ -2,12 +2,17 @@ import connectMongo from "@/lib/connectMongo";
 import User from "@/models/User";
 import NextAuth from "next-auth";
 import GithubProvider from "next-auth/providers/github";
-export const runtime = "nodejs"; 
+import GoogleProvider from "next-auth/providers/google";
+export const runtime = "nodejs";
 export const authOptions = {
   providers: [
     GithubProvider({
       clientId: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
   ],
   callbacks: {
@@ -44,6 +49,12 @@ export const authOptions = {
         session.user.email = token.email;
       }
       return session;
+    },
+    async redirect({ url, baseUrl }) {
+      // allow only same-origin URLs
+      if (url.startsWith(baseUrl)) return url;
+      if (url.startsWith("/")) return baseUrl + url;
+      return baseUrl;
     },
   },
 

@@ -262,7 +262,6 @@ main.adminDashboard .action-btn.delete:hover {
 
 /* Responsive Design */
 @media (max-width: 1200px) {
-
   main.adminDashboard .overview-grid {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -273,7 +272,6 @@ main.adminDashboard .action-btn.delete:hover {
 }
 
 @media (max-width: 768px) {
-    
   main.adminDashboard {
     padding: 1.5rem;
   }
@@ -352,6 +350,19 @@ main.adminDashboard .action-btn.delete:hover {
 
   main.adminDashboard .graph-card h3 {
     font-size: 1.2rem;
+  }
+
+  main.adminDashboard .products-section-header {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  main.adminDashboard .products-section-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
   }
 
   main.adminDashboard .admin-product-card-content h3 {

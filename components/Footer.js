@@ -8,7 +8,6 @@ const Footer = () => {
   const [input, setInput] = useState("");
   return (
     <footer className="footer">
-      <ToastContainer />
       <div className="footer-content">
         <div className="footer-section">
           <h3>The Fashion World</h3>

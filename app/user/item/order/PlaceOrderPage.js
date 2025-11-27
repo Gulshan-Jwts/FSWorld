@@ -5,10 +5,12 @@ import { useData } from "@/components/DataContext";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 
 export default function PlaceOrderPage() {
   const { products, dbUser, reload } = useData();
+  const pathname = usePathname();
   const { data: session, status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -49,14 +51,14 @@ export default function PlaceOrderPage() {
   const total = product.currentPrice * quantity - discount;
 
   useEffect(() => {
-console.log(session)
     if (status === "loading") return;
     if (!session) {
-      router.push("/user/login");
+      console.log(`/user/login?redirect=${encodeURIComponent(`${pathname}/?productId=${productId}&color=${color}&size=${size}&quantity=${quantity}`)}`, " pathname in placeorder")
+      router.push(`/user/login?redirect=${encodeURIComponent(`${pathname}/?productId=${productId}&color=${color}&size=${size}&quantity=${quantity}`)}`);
       toast.info("Please log in to place an order");
       return;
     }
-  }, [session, status, router]);
+  }, [session, status, router, pathname]);
 
   useEffect(() => {
     if (dbUser) {
@@ -134,7 +136,10 @@ console.log(session)
     try {
       const orderRes = await fetch("/api/payment/generate", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "x-user-email": session.user.email },
+        headers: {
+          "Content-Type": "application/json",
+          "x-user-email": session.user.email,
+        },
         body: JSON.stringify({ amount: product.currentPrice * quantity }),
       });
       const orderData = await orderRes.json();
@@ -204,7 +209,11 @@ console.log(session)
               </h2>
               <div className="flex gap-4 mb-4">
                 <Image
-                  src={product.images?.[color === "maincolor" ? "main" : color]?.[0].image || "/placeholder.jpg"}
+                  src={
+                    product.images?.[
+                      color === "maincolor" ? "main" : color
+                    ]?.[0].image || "/placeholder.jpg"
+                  }
                   alt={product.title}
                   width={80}
                   height={80}

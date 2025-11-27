@@ -115,7 +115,16 @@ const HomePage = () => {
               {categories.map(
                 (cat) =>
                   !cat.hidden && (
-                    <Link href="#kids" key={cat._id} className="category-card">
+                    <Link
+                      href={{
+                        pathname: "/user/subcategory",
+                        query: {
+                          category: cat.name,
+                        },
+                      }}
+                      key={cat._id}
+                      className="category-card"
+                    >
                       <div className="category-image">
                         <Image
                           width={100}
