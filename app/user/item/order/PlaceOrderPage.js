@@ -53,8 +53,17 @@ export default function PlaceOrderPage() {
   useEffect(() => {
     if (status === "loading") return;
     if (!session) {
-      console.log(`/user/login?redirect=${encodeURIComponent(`${pathname}/?productId=${productId}&color=${color}&size=${size}&quantity=${quantity}`)}`, " pathname in placeorder")
-      router.push(`/user/login?redirect=${encodeURIComponent(`${pathname}/?productId=${productId}&color=${color}&size=${size}&quantity=${quantity}`)}`);
+      console.log(
+        `/user/login?redirect=${encodeURIComponent(
+          `${pathname}/?productId=${productId}&color=${color}&size=${size}&quantity=${quantity}`
+        )}`,
+        " pathname in placeorder"
+      );
+      router.push(
+        `/user/login?redirect=${encodeURIComponent(
+          `${pathname}/?productId=${productId}&color=${color}&size=${size}&quantity=${quantity}`
+        )}`
+      );
       toast.info("Please log in to place an order");
       return;
     }
@@ -149,7 +158,7 @@ export default function PlaceOrderPage() {
         key: orderData.key,
         amount: orderData.amount,
         currency: "INR",
-        name: "FsWorld",
+        name: "MegaHub",
         description: `Order for ${product.title}`,
         order_id: orderData.orderId,
         prefill: { name: address.fullName, contact: address.phone },
@@ -162,7 +171,7 @@ export default function PlaceOrderPage() {
               .map(() => placeOrder());
             await Promise.all(promises);
             toast.success("Order placed successfully!");
-            router.push("/user");
+            router.push("/user/orders");
           } catch (err) {
             toast.error(err.description || "Payment failed");
           }
@@ -265,7 +274,9 @@ export default function PlaceOrderPage() {
                       </svg>
                     </button>
                   </div>
-                  <p className="text-[#73D5E8] font-semibold">Color: {color}</p>
+                  <p className="text-[#73D5E8] font-semibold">
+                    Color: {color === "main" ? product.images.maincolor : color}
+                  </p>
                   <p className="text-[#73D5E8] font-semibold">Size: {size}</p>
                 </div>
               </div>

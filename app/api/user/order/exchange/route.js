@@ -5,7 +5,7 @@ import Product from "@/models/Product";
 import User from "@/models/User";
 
 function generateOrderId() {
-  return `EXCH-${Date.now()}-${Math.floor(Math.random() * 100000)}`;
+  return `666${Date.now()}${Math.floor(Math.random() * 100000)}`;
 }
 
 async function getShiprocketToken() {
@@ -25,37 +25,86 @@ async function getShiprocketToken() {
 }
 
 async function createReturnShipment(token, returnData) {
-  const res = await fetch(
-    "https://apiv2.shiprocket.in/v1/external/orders/create/return",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(returnData),
-    }
-  );
+  // const res = await fetch(
+  //   "https://apiv2.shiprocket.in/v1/external/orders/create/return",
+  //   {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //     body: JSON.stringify(returnData),
+  //   }
+  // );
 
-  const data = await res.json();
-  console.log("Return shipment:", data);
+  // const data = await res.json();
+  const data = JSON.parse(`{
+    "order_id": 170872392,
+    "shipment_id": 170411259,
+    "status": "RETURN PENDING",
+    "status_code": 21,
+    "company_name": "shiprocket"
+  }`);
+
+  console.log("Return shipment for:", JSON.stringify(returnData));
+  return data;
+}
+
+async function assignReturnAwb(token, shipmentId) {
+  // const res = await fetch(
+  //   "https://apiv2.shiprocket.in/v1/external/courier/assign/awb",
+  //   {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //     body: JSON.stringify({
+  //       shipment_id: shipmentId,
+  //       status: "1",
+  //       is_return: "1",
+  //     }),
+  //   }
+  // );
+
+  // const data = await res.json();
+  const data = JSON.parse("{}");
+  console.log(
+    "Return AWB Assign for:",
+    JSON.stringify({
+      shipment_id: shipmentId,
+      status: "1",
+      is_return: "1",
+    })
+  );
   return data;
 }
 
 async function createShiprocketOrder(token, orderData) {
-  const res = await fetch(
-    "https://apiv2.shiprocket.in/v1/external/orders/create/adhoc",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(orderData),
-    }
-  );
-  const data = await res.json();
-  console.log("Order cretion exchange: ", data);
+  // const res = await fetch(
+  //   "https://apiv2.shiprocket.in/v1/external/orders/create/adhoc",
+  //   {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //     body: JSON.stringify(orderData),
+  //   }
+  // );
+  // const data = await res.json();
+  const data = JSON.parse(`{
+    "order_id": 16161616,
+    "shipment_id": 15151515,
+    "status": "NEW",
+    "status_code": 1,
+    "onboarding_completed_now": 0,
+    "awb_code": null,
+    "courier_company_id": null,
+    "courier_name": null
+  }`);
+
+  console.log("Order creation exchange for: ", JSON.stringify(orderData));
   return data;
 }
 
@@ -72,11 +121,12 @@ export async function POST(request) {
         { status: 400 }
       );
     }
+    console.log(oldOrderId, newColor, newSize);
 
     const token = await getShiprocketToken();
 
     // 1. Find the old order
-    const oldOrder = await Order.findById(oldOrderId);
+    const oldOrder = await Order.findOne({ OrderId: oldOrderId });
     if (!oldOrder) {
       return NextResponse.json(
         { error: "Old order not found" },
@@ -144,7 +194,7 @@ export async function POST(request) {
           selling_price: oldOrder.items[0].priceAtPurchase,
         },
       ],
-      order_id: `RET-${oldOrder.OrderId}`,
+      order_id: `149056${oldOrder.OrderId}`,
       order_date: new Date().toISOString(),
       pickup_location: process.env.SHIPROCKET_PICKUP_LOCATION,
 
@@ -159,16 +209,29 @@ export async function POST(request) {
     let newOrder = {};
 
     if (returnRes && returnRes.shipment_id) {
-      oldOrder.status = "Exchanged";
-      oldOrder.returnInfo = {
-        shipmentId: returnRes.shipment_id,
-        orderId: returnRes.order_id,
-        status: returnRes.status,
-      };
+      if (!returnRes.shipment_id) {
+        console.log(
+          "No shipment id found in company found for return shipment in: ",
+          JSON.stringify(returnRes)
+        );
+      } else {
+        const awbRes = await assignReturnAwb(token, returnRes.shipment_id);
 
+        console.log("Return AWB Assigned:", awbRes);
+      }
+      oldOrder.status = "exchanged";
+      oldOrder.statusCode = 5;
+      const shipmentIdStr = returnRes.shipment_id + "";
+      const orderIdStr = returnRes.order_id + "";
+      console.log("Return shipment created:", shipmentIdStr, orderIdStr);
+      oldOrder.set("returnInfo.shipmentId", shipmentIdStr);
+      oldOrder.set("returnInfo.orderId", orderIdStr);
+      oldOrder.set("returnInfo.createdAt", new Date());
+
+      oldOrder.markModified("returnInfo");
       await oldOrder.save();
 
-      // 3. Create new exchange order (MongoDB only, no Shiprocket)
+      // 3. Create new exchange order
       const newOrderId = generateOrderId();
       const srOrder = await createShiprocketOrder(token, {
         order_id: newOrderId,
@@ -222,6 +285,7 @@ export async function POST(request) {
         OrderId: newOrderId,
         chanelOrderId: srOrder.order_id,
         shipmentId: srOrder.shipment_id,
+        totalAmount: oldOrder.totalAmount,
         wasExchanged: {
           status: true,
           forProduct: oldOrder._id,
@@ -241,6 +305,7 @@ export async function POST(request) {
         color: newColor,
         amount: oldOrder.currentPrice,
       });
+      await user.save();
     }
 
     return NextResponse.json(

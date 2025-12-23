@@ -45,6 +45,7 @@ export async function POST(req) {
             "Content-Type": "application/json",
             "x-user-email": email,
             Authorization: authHeader,
+            "x-internal-secret": process.env.INTERNAL_API_SECRET
           },
           body: JSON.stringify(body),
         });

@@ -32,7 +32,8 @@ const orderSchema = new mongoose.Schema(
       pincode: String,
     },
     affilator: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    status: { type: String, default: "Created" }, // can be Completed,Cancelled,Exchanged or RTO
+    status: { type: String, default: "created" }, // can be Created/Confirmed/InTransist/Delivered/Exchanged/Returned/Received/Cancelled
+    statusCode: { type: Number, default: 1 }, //can be 0-7 
     cancelled: {
       status: { type: Boolean, default: false },
       time: Date ,
@@ -42,7 +43,7 @@ const orderSchema = new mongoose.Schema(
       forProduct: { type: mongoose.Schema.Types.ObjectId, ref: "Order" },
     },
     exchanged: {
-      status: { type: String, default: "none" }, // can be initiated/returned/created
+      status: { type: String, default: "none" }, // can be initiated/returned/received/none
       forProduct: { type: mongoose.Schema.Types.ObjectId, ref: "Order" },
     },
     returnInfo: {
@@ -50,9 +51,9 @@ const orderSchema = new mongoose.Schema(
       orderId: String,
       awbCode: String,
       courierName: String,
-      status: String,
       createdAt: { type: Date, default: Date.now },
     },
+    isRTO: { type: Boolean, default: false },
     purchasedAt: { type: Date, default: Date.now },
   },
   { timestamps: true }

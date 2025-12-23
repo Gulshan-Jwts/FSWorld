@@ -5,7 +5,7 @@ import Order from "@/models/Orders";
 import connectMongo from "@/lib/connectMongo";
 
 function generateOrderId() {
-  return `ORD-${Date.now()}-${Math.floor(Math.random() * 100000)}`;
+  return `500${Date.now()}${Math.floor(Math.random() * 100000)}`;
 }
 
 async function getShiprocketToken() {
@@ -39,38 +39,6 @@ async function createShiprocketOrder(token, orderData) {
   const data = await res.json();
   console.log(data);
   return data;
-}
-
-async function assignCourierAndAWB(token, shipmentId) {
-  const res = await fetch(
-    "https://apiv2.shiprocket.in/v1/external/courier/assign/awb",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ shipment_id: shipmentId }),
-    }
-  );
-  const data = await res.json();
-  console.log(
-    "Assigning courier and AWB:",
-    JSON.stringify(data),
-    res.statusText
-  );
-  return data;
-}
-
-async function generateInvoice(token, orderId) {
-  const res = await fetch(
-    `https://apiv2.shiprocket.in/v1/external/orders/print/invoice?ids=${orderId}`,
-    {
-      method: "GET",
-      headers: { Authorization: `Bearer ${token}` },
-    }
-  );
-  return res.json();
 }
 
 export async function POST(request) {
@@ -175,28 +143,14 @@ export async function POST(request) {
       shiprocketOrderData
     );
 
-    // Step 3: Assign courier & generate AWB
-    const courierRes = await assignCourierAndAWB(
-      token,
-      shiprocketRes.shipment_id
-    );
+    order.OrderId = orderId || null;
 
-    // Step 4: Generate Invoice
-    const invoiceRes = await generateInvoice(token, shiprocketRes.order_id);
-
-    // Step 5: Save all in DB
-    order.shipmentId = shiprocketRes.shipment_id || null;
-    order.OrderId = shiprocketRes.channel_order_id || null;
-    order.chanelOrderId = shiprocketRes.order_id || "sale ne nahi diya";
-    order.courierBy = courierRes.response.data.courier_name || null;
-    order.trackingCode = courierRes.response.data.awb_code || null;
+    // testing for shipment
+    order.shipmentId = "shiprocketRes.shipment_id" || null;
+    order.chanelOrderId = "shiprocketRes.order_id" || "";
+    order.courierBy = "courierRes.response.data.courier_name" || null;
+    order.trackingCode = "courierRes.response.data.awb_code" || null;
     await order.save();
-
-    console.log({
-      order: shiprocketRes,
-      courier: courierRes,
-      invoice: invoiceRes,
-    });
 
     return NextResponse.json(
       {
@@ -205,8 +159,6 @@ export async function POST(request) {
         order,
         shiprocket: {
           order: shiprocketRes,
-          courier: courierRes,
-          invoice: invoiceRes,
         },
       },
       { status: 201 }

@@ -14,7 +14,7 @@ import { useData } from "@/components/DataContext";
 import ProductCard from "@/components/ProductCard";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 
 const Page = () => {
   const { productId } = useParams();
@@ -189,6 +189,7 @@ const Page = () => {
       animate="visible"
       variants={sectionVariants}
     >
+      <ToastContainer position="top-right" autoClose={3000} />
       <div className="product-container">
         {/* Image Gallery */}
         <div className="product-gallery">
@@ -512,7 +513,7 @@ const Page = () => {
               onClick={() => {
                 if (navigator.share) {
                   navigator.share({
-                    title: "FsWorld Product",
+                    title: "MegaHub Product",
                     text: "Check this out!",
                     url: window.location.href,
                   });

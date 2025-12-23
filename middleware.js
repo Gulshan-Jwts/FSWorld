@@ -56,40 +56,46 @@ export async function middleware(request) {
     !pathname.startsWith("/api/user/getBanners") &&
     !pathname.startsWith("/api/user/getProducts")
   ) {
-    const authHeader = request.headers.get("Authorization");
+    const internalReqsecret = request.headers.get("x-internal-secret");
+    if (internalReqsecret === process.env.INTERNAL_API_SECRET) {
+      return NextResponse.next();
+    }
 
+    let userEmail = "";
+
+    // 1. JWT check
+    const authHeader = request.headers.get("Authorization");
     if (authHeader?.startsWith("Bearer ")) {
       const token = authHeader.split(" ")[1];
       const payload = await verifyJWT(token, AFFILATOR_SECRET);
-      if (!payload) {
+      if (payload) {
+        userEmail = payload.email;
+      }
+    }
+
+    // 2. NextAuth check
+    if (!userEmail) {
+      const sessionToken = await getToken({
+        req: request,
+        secret: process.env.AUTH_SECRET,
+      });
+      if (sessionToken) {
+        userEmail = sessionToken.email;
+      } else {
+        console.log("No valid session found in NextAuth by middleware");
+      }
+    }
+
+    // 3. Final decision
+    if (!userEmail) {
       return NextResponse.json(
-        { success: false, message: "Unauthorized: Invalid or expired token" },
+        { success: false, message: "Unauthorized by middleWare" },
         { status: 401 }
       );
     }
-      const requestHeaders = new Headers(request.headers);
-      requestHeaders.set(
-        "x-user-email",
-        payload.email || ""
-      );
-    }
-
-    const sessionToken = await getToken({ req: request, secret: process.env.AUTH_SECRET });
-
-    if (!sessionToken) {
-      return NextResponse.json(
-        { success: false, message: "Unauthorized: Invalid or expired token" },
-        { status: 401 }
-      );
-    }
-
-    console.log(sessionToken.email,"email of user")
 
     const requestHeaders = new Headers(request.headers);
-    requestHeaders.set(
-      "x-user-email",
-      sessionToken.email || ""
-    );
+    requestHeaders.set("x-user-email", userEmail);
 
     return NextResponse.next({
       request: { headers: requestHeaders },

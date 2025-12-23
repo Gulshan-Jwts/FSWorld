@@ -80,22 +80,20 @@ const CartScreen = () => {
   }, [dbUser?.cart]);
 
   // Handle quantity change with backend sync
-const handleQuantityChange = async (cartItem, delta) => {
-  const key = `${cartItem.productId}-${cartItem.size}-${cartItem.color}`;
-  const currentQuantity = quantities[key] || 1;
-  const newQuantity = Math.max(1, currentQuantity + delta);
+  const handleQuantityChange = async (cartItem, delta) => {
+    const key = `${cartItem.productId}-${cartItem.size}-${cartItem.color}`;
+    const currentQuantity = quantities[key] || 1;
+    const newQuantity = Math.max(1, currentQuantity + delta);
 
-  // ✅ 1. UI me pehle update kar do
-  setQuantities((prev) => ({
-    ...prev,
-    [key]: newQuantity,
-  }));
+    // ✅ 1. UI me pehle update kar do
+    setQuantities((prev) => ({
+      ...prev,
+      [key]: newQuantity,
+    }));
 
-  try {
-    // ✅ 2. Server ko background me request bhejo
-    const response = await fetch(
-      "/api/user/cart/updateQty",
-      {
+    try {
+      // ✅ 2. Server ko background me request bhejo
+      const response = await fetch("/api/user/cart/updateQty", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -107,48 +105,42 @@ const handleQuantityChange = async (cartItem, delta) => {
           color: cartItem.color,
           quantity: newQuantity,
         }),
+      });
+
+      const data = await response.json();
+
+      // ❌ 3. Agar server error de, to rollback kar do
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || "Failed to update cart quantity");
       }
-    );
+    } catch (error) {
+      console.error("Error updating quantity:", error);
+      toast.error("Failed to update quantity. Rolling back...");
 
-    const data = await response.json();
-
-    // ❌ 3. Agar server error de, to rollback kar do
-    if (!response.ok || !data.success) {
-      throw new Error(data.error || "Failed to update cart quantity");
+      // 🔁 Rollback UI
+      setQuantities((prev) => ({
+        ...prev,
+        [key]: currentQuantity,
+      }));
     }
-
-  } catch (error) {
-    console.error("Error updating quantity:", error);
-    toast.error("Failed to update quantity. Rolling back...");
-    
-    // 🔁 Rollback UI
-    setQuantities((prev) => ({
-      ...prev,
-      [key]: currentQuantity,
-    }));
-  }
-};
-
+  };
 
   // Handle item removal with backend sync
   const handleRemoveItem = async (cartItem) => {
     const key = `${cartItem.productId}-${cartItem.size}-${cartItem.color}`;
     try {
-      const response = await fetch(
-        "/api/user/cart/remove",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-user-email": dbUser?.email || "",
-          },
-          body: JSON.stringify({
-            productId: cartItem.productId,
-            size: cartItem.size,
-            color: cartItem.color,
-          }),
-        }
-      );
+      const response = await fetch("/api/user/cart/remove", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-user-email": dbUser?.email || "",
+        },
+        body: JSON.stringify({
+          productId: cartItem.productId,
+          size: cartItem.size,
+          color: cartItem.color,
+        }),
+      });
 
       const data = await response.json();
       if (!response.ok || !data.success) {
@@ -176,7 +168,7 @@ const handleQuantityChange = async (cartItem, delta) => {
         quantities[`${cartItem.productId}-${cartItem.size}-${cartItem.color}`]
     );
   }, 0);
-  console.log(quantities)
+  console.log(quantities);
   const isFirstOrder = dbUser?.Orders.length === 0;
   const discount = Math.round(netPrice * (isFirstOrder ? 0.15 : 0.1));
   const total = netPrice - discount;
@@ -186,8 +178,13 @@ const handleQuantityChange = async (cartItem, delta) => {
   const getProductImage = (images, color) => {
     if (!images) return "https://via.placeholder.com/80x80";
     const keys = Object.keys(images);
+    console.log(
+      "returning: keys color",
+      images[color],
+      color
+    );
     return (
-      images[keys[color]]?.[0].image ||
+      images[color]?.[0].image ||
       images[keys[0]]?.[0].image ||
       "https://via.placeholder.com/80x80"
     );
@@ -202,7 +199,7 @@ const handleQuantityChange = async (cartItem, delta) => {
         </h2>
         <div className="cart-layout">
           <section className="cart-items-list">
-            {dbUser?.cart.length === 0 ? (
+            {dbUser?.cart.length === 0 || !dbUser?.cart ? (
               <div className="empty-cart">
                 <h3>Your cart is empty</h3>
                 <Link href="/" className="shop-now-btn">
@@ -217,7 +214,7 @@ const handleQuantityChange = async (cartItem, delta) => {
                 if (!product) return null;
                 return (
                   <div key={index} className="cart-item-card">
-                    <Link href={`/products/${product._id}`}>
+                    <Link href={`/user/item/details/${product._id}`}>
                       <div className="item-image-container">
                         <Image
                           src={getProductImage(product.images, cartItem.color)}
@@ -235,7 +232,13 @@ const handleQuantityChange = async (cartItem, delta) => {
                           Size: <span>{cartItem.size}</span>
                         </div>
                         <div>
-                          Color: <span>{cartItem.color}</span>
+                          {console.log(cartItem)}
+                          Color:{" "}
+                          <span>
+                            {cartItem.color === "main"
+                              ? product.images.maincolor
+                              : cartItem.color}
+                          </span>
                         </div>
                       </div>
                       <div className="item-pricing">
@@ -338,7 +341,7 @@ const handleQuantityChange = async (cartItem, delta) => {
                 <span className="summary-label">Order Total</span>
                 <span className="summary-value">₹{total}</span>
               </div>
-              <Link href="/checkout" className="btn-primary">
+              <Link href="/user/cart/checkout" className="btn-primary">
                 Proceed to Checkout
               </Link>
               <Link href="/" className="continue-shopping">

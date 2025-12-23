@@ -28,10 +28,6 @@ const DataWrapper = ({ children }) => {
     }
   };
 
-  useEffect(() => {
-    console.log(categories);
-  }, [categories]);
-
   const fetchUserData = useCallback(async () => {
     if (session?.user?.email) {
       try {

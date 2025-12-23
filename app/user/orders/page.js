@@ -44,7 +44,9 @@ const YourOrdersScreen = () => {
         setOrders(data.orders);
       } catch (error) {
         console.error("Error fetching orders:", error);
-        toast.error(error.message || "Could not fetch orders. Please try again.");
+        toast.error(
+          error.message || "Could not fetch orders. Please try again."
+        );
       } finally {
         setLoading(false);
       }
@@ -100,10 +102,10 @@ const YourOrdersScreen = () => {
       <ToastContainer position="top-right" autoClose={3000} />
       <div className="container">
         <section className="orders-list">
-          <h2 className="section-title">Your Orders</h2>
+          <h1 className="section-title">Your Orders</h1>
           {loading ? (
             <p className="loading-text">Loading orders...</p>
-          ) : orders.length === 0 ? (
+          ) : orders.length === 0 || !dbUser ? (
             <div className="empty-orders">
               <svg width="256" height="160" viewBox="0 0 433 559" fill="none">
                 <path
@@ -306,10 +308,13 @@ const YourOrdersScreen = () => {
           ) : (
             orders.map((order, index) => (
               <div key={index} className="order-card">
-                <Link href={`/products/${order.items[0].product._id}`}>
+                <Link href={`/user/item/details/${order.items[0].product._id}`}>
                   <div className="order-image-container">
                     <Image
-                      src={getProductImage(order.items[0].product._id)}
+                      src={getProductImage(
+                        order.items[0].product._id,
+                        order.items[0].color
+                      )}
                       alt={getProductTitle(order.items[0].product._id)}
                       width={80}
                       height={100}
@@ -339,7 +344,7 @@ const YourOrdersScreen = () => {
                   </p>
                   <div className="actions">
                     <Link
-                      href={`/order-tracking/${order.OrderId}`}
+                      href={`/user/orders/track/${order.OrderId}`}
                       className="track-btn"
                     >
                       Track Order

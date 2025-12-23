@@ -10,9 +10,9 @@ const Footer = () => {
     <footer className="footer">
       <div className="footer-content">
         <div className="footer-section">
-          <h3>The Fashion World</h3>
+          <h3>The MegaHub</h3>
           <p>
-            Crafted with passion, The Fashioin World brings you premium clothing
+            Crafted with passion, The MegaHub brings you premium clothing
             for men, women, and kids, blending timeless elegance with modern
             trends.
           </p>
