@@ -3,6 +3,7 @@ import Link from "next/link";
 import "@/stylesheets/footer.css";
 import { toast, ToastContainer } from "react-toastify";
 import { useState } from "react";
+import { signOut } from "next-auth/react";
 
 const Footer = () => {
   const [input, setInput] = useState("");
@@ -12,9 +13,8 @@ const Footer = () => {
         <div className="footer-section">
           <h3>The MegaHub</h3>
           <p>
-            Crafted with passion, The MegaHub brings you premium clothing
-            for men, women, and kids, blending timeless elegance with modern
-            trends.
+            Crafted with passion, The MegaHub brings you premium clothing for
+            men, women, and kids, blending timeless elegance with modern trends.
           </p>
           <div className="social-links">
             <Link href="#">
@@ -43,8 +43,7 @@ const Footer = () => {
             </Link>
           </div>
         </div>
-        <div className="footer-section">
-        </div>
+        <div className="footer-section"></div>
         <div className="footer-section">
           <h3>Support</h3>
           <ul>
@@ -55,7 +54,9 @@ const Footer = () => {
               <Link href="/policies/faq">FAQs</Link>
             </li>
             <li>
-              <Link href="/policies/terms-and-conditions">Terms & Conditions</Link>
+              <Link href="/policies/terms-and-conditions">
+                Terms & Conditions
+              </Link>
             </li>
             <li>
               <Link href="/policies/privacy">Privacy Policy</Link>
@@ -93,6 +94,12 @@ const Footer = () => {
               Join Now
             </button>
           </form>
+          <button
+            onClick={() => signOut()}
+            className="rounded-lg bg-red-500 px-5 py-2 text-sm font-semibold text-white shadow-md transition hover:bg-red-600 active:scale-95"
+          >
+            Logout
+          </button>
         </div>
       </div>
       <div className="footer-bottom">
