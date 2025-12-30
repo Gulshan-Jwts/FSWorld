@@ -6,8 +6,8 @@ import Product from "@/models/Product";
 export async function PUT(request) {
   try {
     await connectMongo();
-    const body = await request.json();
-    const { productId, size, color, quantity } = body;
+
+    const { productId, size, color, quantity } = await request.json();
     const userEmail = request.headers.get("x-user-email");
 
     if (!userEmail) {
@@ -24,39 +24,48 @@ export async function PUT(request) {
       );
     }
 
-    const user = await User.findOne({ email: userEmail });
+    // Optional product validation
     const product = await Product.findById(productId);
-
-    if (!user || !product) {
-      return NextResponse.json(
-        { error: "Invalid user or product" },
-        { status: 404 }
-      );
+    if (!product) {
+      return NextResponse.json({ error: "Invalid product" }, { status: 404 });
     }
 
-    // Check if the item exists in the cart
-    const cartItemIndex = user.cart.findIndex(
-      (item) =>
-        item.productId.toString() === productId &&
-        item.size === size &&
-        item.color === color
+    // 1️⃣ Try to update quantity if item exists
+    const updatedUser = await User.findOneAndUpdate(
+      {
+        email: userEmail,
+        "cart.productId": productId,
+        "cart.size": size,
+        "cart.color": color,
+      },
+      {
+        $set: { "cart.$.quantity": quantity },
+      },
+      { new: true }
     );
 
-    if (cartItemIndex >= 0) {
-      // Update existing item quantity
-      user.cart[cartItemIndex].quantity = quantity;
-    } else {
-      // Add new item to cart
-      user.cart.push({
-        productId,
-        size: size || null,
-        color: color || null,
-        quantity,
-      });
+    // 2️⃣ If item wasn't found, add it
+    if (!updatedUser) {
+      console.log("Adding new item to cart");
+      const user = await User.findOneAndUpdate(
+        { email: userEmail },
+        {
+          $push: {
+            cart: {
+              productId,
+              size: size || null,
+              color: color || null,
+              quantity,
+            },
+          },
+        },
+        { new: true }
+      );
+
+      return NextResponse.json({ success: true, user });
     }
 
-    await user.save();
-    return NextResponse.json({ success: true, user });
+    return NextResponse.json({ success: true, user: updatedUser });
   } catch (error) {
     console.error("Error updating cart:", error);
     return NextResponse.json(

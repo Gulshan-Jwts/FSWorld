@@ -5,8 +5,8 @@ import Product from "@/models/Product";
 
 export async function POST(request) {
   await connectMongo();
-  const body = await request.json();
-  const { productId, size, color } = body;
+
+  const { productId, size, color } = await request.json();
   const userEmail = request.headers.get("x-user-email");
 
   if (!userEmail) {
@@ -16,24 +16,34 @@ export async function POST(request) {
     );
   }
 
-  const user = await User.findOne({ email: userEmail });
   const product = await Product.findById(productId);
-
-  if (!user || !product) {
-    console.log(user,product)
+  if (!product) {
     return NextResponse.json(
-      { error: "Invalid user or product" },
+      { error: "Invalid product" },
       { status: 404 }
     );
   }
-  user.cart = user.cart.filter(
-    (item) =>
-      !(
-        item.productId.toString() === product._id.toString() &&
-        item.size === size &&
-        item.color === color
-      )
+
+  const user = await User.findOneAndUpdate(
+    { email: userEmail },
+    {
+      $pull: {
+        cart: {
+          productId: product._id,
+          size,
+          color,
+        },
+      },
+    },
+    { new: true }
   );
-  await user.save();
+
+  if (!user) {
+    return NextResponse.json(
+      { error: "User not found" },
+      { status: 404 }
+    );
+  }
+
   return NextResponse.json({ success: true, user });
 }

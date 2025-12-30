@@ -50,6 +50,9 @@ const CartScreen = () => {
   const router = useRouter();
   const { products, dbUser, reload } = useData();
   const { data: session, status } = useSession();
+  const [netPrice, setNetPrice] = useState(0);
+  const [isFirstOrder, setIsFirstOrder] = useState(false);
+  const [pendingRequestsCount, setPendingRequestsCount] = useState(0);
   const [quantities, setQuantities] = useState(
     dbUser?.cart?.reduce(
       (acc, item) => ({
@@ -85,14 +88,15 @@ const CartScreen = () => {
     const currentQuantity = quantities[key] || 1;
     const newQuantity = Math.max(1, currentQuantity + delta);
 
-    // ✅ 1. UI me pehle update kar do
+    // 1️⃣ UI optimistic update
     setQuantities((prev) => ({
       ...prev,
       [key]: newQuantity,
     }));
 
+    setPendingRequestsCount((c) => c + 1);
+
     try {
-      // ✅ 2. Server ko background me request bhejo
       const response = await fetch("/api/user/cart/updateQty", {
         method: "PUT",
         headers: {
@@ -106,24 +110,47 @@ const CartScreen = () => {
           quantity: newQuantity,
         }),
       });
+      const quantitiesLocal = { ...quantities, [key]: newQuantity };
+      const netPrice = dbUser?.cart.reduce((total, cartItem) => {
+        const product = products?.find((p) => p._id === cartItem.productId);
+        return (
+          total +
+          (product?.currentPrice || 0) *
+            quantitiesLocal[
+              `${cartItem.productId}-${cartItem.size}-${cartItem.color}`
+            ]
+        );
+      }, 0);
+      setNetPrice(netPrice);
+      reload("dbUser");
 
       const data = await response.json();
 
-      // ❌ 3. Agar server error de, to rollback kar do
       if (!response.ok || !data.success) {
-        throw new Error(data.error || "Failed to update cart quantity");
+        throw new Error(data.error || "Failed to update quantity");
+      }
+      if (response.ok) {
+        setPendingRequestsCount((c) => Math.max(0, c - 1));
       }
     } catch (error) {
-      console.error("Error updating quantity:", error);
-      toast.error("Failed to update quantity. Rolling back...");
+      toast.error("Quantity update failed. Rolling back.");
 
-      // 🔁 Rollback UI
+      // 🔁 rollback
       setQuantities((prev) => ({
         ...prev,
         [key]: currentQuantity,
       }));
     }
   };
+
+  useEffect(() => {
+    if (!quantities) return;
+    console.log(
+      "Pending Requests Count:",
+      pendingRequestsCount,
+      quantities[Object.keys(quantities)[0]]
+    );
+  }, [pendingRequestsCount]);
 
   // Handle item removal with backend sync
   const handleRemoveItem = async (cartItem) => {
@@ -160,29 +187,36 @@ const CartScreen = () => {
   };
 
   // Calculate totals
-  const netPrice = dbUser?.cart.reduce((total, cartItem) => {
-    const product = products?.find((p) => p._id === cartItem.productId);
-    return (
-      total +
-      (product?.currentPrice || 0) *
-        quantities[`${cartItem.productId}-${cartItem.size}-${cartItem.color}`]
-    );
-  }, 0);
-  console.log(quantities);
-  const isFirstOrder = dbUser?.Orders.length === 0;
-  const discount = Math.round(netPrice * (isFirstOrder ? 0.15 : 0.1));
-  const total = netPrice - discount;
-  console.log(discount);
+  useEffect(() => {
+    if (dbUser?.cart && products) {
+      const quantitiesLocal = dbUser?.cart?.reduce(
+        (acc, item) => ({
+          ...acc,
+          [`${item.productId}-${item.size}-${item.color}`]: item.quantity,
+        }),
+        {}
+      );
+      setQuantities(quantitiesLocal);
+      const netPrice = dbUser?.cart.reduce((total, cartItem) => {
+        const product = products?.find((p) => p._id === cartItem.productId);
+        return (
+          total +
+          (product?.currentPrice || 0) *
+            quantitiesLocal[
+              `${cartItem.productId}-${cartItem.size}-${cartItem.color}`
+            ]
+        );
+      }, 0);
+      const isFirstOrder = dbUser?.Orders.length === 0;
+      setNetPrice(netPrice);
+      setIsFirstOrder(isFirstOrder);
+    }
+  }, [dbUser?.cart, products]);
 
   // Get product image
   const getProductImage = (images, color) => {
     if (!images) return "https://via.placeholder.com/80x80";
     const keys = Object.keys(images);
-    console.log(
-      "returning: keys color",
-      images[color],
-      color
-    );
     return (
       images[color]?.[0].image ||
       images[keys[0]]?.[0].image ||
@@ -199,7 +233,7 @@ const CartScreen = () => {
         </h2>
         <div className="cart-layout">
           <section className="cart-items-list">
-            {dbUser?.cart.length === 0 || !dbUser?.cart ? (
+            {dbUser?.cart.length === 0 || !dbUser?.cart || !quantities ? (
               <div className="empty-cart">
                 <h3>Your cart is empty</h3>
                 <Link href="/" className="shop-now-btn">
@@ -232,7 +266,6 @@ const CartScreen = () => {
                           Size: <span>{cartItem.size}</span>
                         </div>
                         <div>
-                          {console.log(cartItem)}
                           Color:{" "}
                           <span>
                             {cartItem.color === "main"
@@ -327,7 +360,12 @@ const CartScreen = () => {
               </div>
               <div className="summary-row discount">
                 <span className="summary-label">Discount</span>
-                <span className="summary-value">-₹{discount.toFixed(1)}</span>
+                <span className="summary-value">
+                  -₹
+                  {Math.round(netPrice * (isFirstOrder ? 0.15 : 0.1)).toFixed(
+                    1
+                  )}
+                </span>
               </div>
               <div className="summary-row shipping">
                 <span className="summary-label">Shipping Charges</span>
@@ -339,11 +377,29 @@ const CartScreen = () => {
               </div>
               <div className="summary-row total">
                 <span className="summary-label">Order Total</span>
-                <span className="summary-value">₹{total}</span>
+                <span className="summary-value">
+                  ₹
+                  {netPrice -
+                    Math.round(netPrice * (isFirstOrder ? 0.15 : 0.1))}
+                </span>
               </div>
-              <Link href="/user/cart/checkout" className="btn-primary">
-                Proceed to Checkout
-              </Link>
+              <button
+                className={`btn-primary ${
+                  pendingRequestsCount > 0 ? "disabled" : ""
+                }`}
+                onClick={() => {
+                  if (pendingRequestsCount > 0) {
+                    toast.warn("Please wait, updating cart...");
+                    return;
+                  }
+                  router.push("/user/cart/checkout");
+                }}
+              >
+                {pendingRequestsCount > 0
+                  ? "Updating Cart..."
+                  : "Proceed to Checkout"}
+              </button>
+
               <Link href="/" className="continue-shopping">
                 ← Continue Shopping
               </Link>

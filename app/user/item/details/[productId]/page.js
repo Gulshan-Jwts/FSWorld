@@ -111,11 +111,8 @@ const Page = () => {
           body: JSON.stringify({ productId, size, color }),
         });
       }
-
-      console.log(res, "Cart response");
-
       const data = await res.json();
-      console.log(data, "respnonsj");
+      console.log(data, "respnonsj", { productId, size, color });
 
       if (!res.ok) {
         toast.error("Failed to update cart", {
@@ -342,7 +339,7 @@ const Page = () => {
 
         {/* Product Info */}
         <div className="product-info">
-          <p className="product-brand">TFW</p>
+          <p className="product-brand">TMH</p>
           <h1 className="product-title">
             {product.title || "Premium Silk Saree"}
           </h1>
@@ -370,11 +367,7 @@ const Page = () => {
                     onClick={() => handleVariantChange(key)}
                   >
                     <Image
-                      src={
-                        key === "maincolor"
-                          ? product.images.main[0].image
-                          : product.images[key][0].image
-                      }
+                      src={product.images[key][0].image}
                       alt={`Variant ${key}`}
                       width={80}
                       height={80}

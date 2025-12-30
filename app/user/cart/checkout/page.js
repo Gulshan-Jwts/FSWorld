@@ -140,7 +140,7 @@ export default function CartCheckoutPage() {
         name: "MegaHub",
         description: "Cart Order Payment",
         image:
-          "https://rzz1bwkago.ufs.sh/f/OPkkuA3bVahinICwt2L8y0BXqVuhxf47TitO2U3RgNpnQe9b",
+          "https://www.themegahub.in/_next/image?url=%2Fimages%2Flogo.png&w=256&q=75",
         order_id: orderId,
         prefill: {
           name: address.fullName,

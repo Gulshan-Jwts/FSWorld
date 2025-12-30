@@ -25,7 +25,6 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "The MegaHub",
   description: "The MegaHub Clothing and Accessories Store",
-  themeColor: "#ccfff3",
 };
 
 export default function RootLayout({ children }) {

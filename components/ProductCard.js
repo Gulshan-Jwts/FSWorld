@@ -38,12 +38,23 @@ const ProductCard = ({
     try {
       let res;
       if (alreadyInCart) {
+        const cartItem = dbUser?.cart?.find(
+          (item) =>
+            item.productId === productId &&
+            item.size === size &&
+            item.color === color
+        );
         res = await fetch(`/api/user/cart/updateQty`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ productId, size, color }),
+          body: JSON.stringify({
+            productId,
+            size,
+            color,
+            quantity: cartItem.quantity + 1,
+          }),
         });
       } else {
         res = await fetch(`/api/user/cart/add`, {
@@ -54,11 +65,7 @@ const ProductCard = ({
           body: JSON.stringify({ productId, size, color }),
         });
       }
-
-      console.log(res, "Cart response");
-
       const data = await res.json();
-      console.log(data,"respnonsj")
 
       if (!res.ok) {
         toast.error("Failed to update cart", {
@@ -66,7 +73,6 @@ const ProductCard = ({
           autoClose: 3000,
         });
         console.log("Cart error:", data);
-
       }
       reload("dbUser");
     } catch (err) {
@@ -108,9 +114,7 @@ const ProductCard = ({
         {showUserActions && (
           <button
             className="add-to-cart"
-            onClick={() =>
-              addToCart(product._id, product.maincolor, product.sizes[0])
-            }
+            onClick={() => addToCart(product._id, "main", product.sizes[0])}
           >
             <span>Add to Cart</span>
           </button>

@@ -46,7 +46,7 @@ const Navbar = () => {
             width={150}
             height={50}
             src="/images/logo.png"
-            alt="TFW Logo"
+            alt="TMH Logo"
           />
         </Link>
 
