@@ -387,7 +387,7 @@ const Page = () => {
           <div className="size-selector">
             <label htmlFor="size">Select Size</label>
             <div className="size-options">
-              {["S", "M", "L"].map((size) => (
+              {product?.sizes?.map((size) => (
                 <button
                   key={size}
                   className={`size-option ${
